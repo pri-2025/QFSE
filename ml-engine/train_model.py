@@ -26,10 +26,15 @@ from sklearn.metrics import (
 )
 
 # ── Paths ─────────────────────────────────────────────────────
+import os
 BASE_DIR    = Path(__file__).parent
 DATA_PATH   = BASE_DIR / "dataset.csv"
-MODEL_PATH  = BASE_DIR / "model.pkl"
+MODEL_PATH  = Path(os.environ.get("MODEL_PATH", str(BASE_DIR / "model.pkl")))
 NAMES_PATH  = BASE_DIR / "feature_names.json"
+
+# Ensure model output directory exists
+MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+
 
 FEATURE_COLS = [
     "salary_delay_freq",
