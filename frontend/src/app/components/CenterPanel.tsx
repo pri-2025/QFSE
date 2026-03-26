@@ -1,22 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { QuantumCard } from "./QuantumCard";
-import { HeatMap } from "./visualizations/HeatMap";
 import { EntanglementMap } from "./visualizations/EntanglementMap";
 import { WaveFunction } from "./visualizations/WaveFunction";
 import { motion, AnimatePresence } from "motion/react";
 
 interface CenterPanelProps {
-  activeView: "heat-map" | "entanglement" | "wave-function";
-  setActiveView: (view: "heat-map" | "entanglement" | "wave-function") => void;
+  activeView: "entanglement" | "wave-function";
+  setActiveView: (view: "entanglement" | "wave-function") => void;
   onSelectCustomer: (id: string) => void;
   selectedCustomerId: string | null;
 }
 
 export function CenterPanel({ activeView, setActiveView, onSelectCustomer, selectedCustomerId }: CenterPanelProps) {
   const tabs = [
-    { id: "heat-map", label: "Heat Map", icon: "🌡️" },
-    { id: "entanglement", label: "Entanglement Map", icon: "🔗" },
-    { id: "wave-function", label: "Wave Function", icon: "📈" },
+    { id: "entanglement", label: "Entanglement Map", icon: "??" },
+    { id: "wave-function", label: "Wave Function", icon: "??" },
   ];
 
   return (
@@ -34,13 +32,11 @@ export function CenterPanel({ activeView, setActiveView, onSelectCustomer, selec
             </button>
           ))}
         </div>
-        
         <div className="flex items-center gap-2 text-[10px] text-[#B0B0C0] uppercase tracking-widest font-bold">
           <span className="w-2 h-2 rounded-full bg-[#00C853] animate-pulse" />
           Live Evolution Monitor
         </div>
       </div>
-
       <QuantumCard className="flex-1 min-h-0 overflow-hidden p-0 relative border-none bg-transparent">
         <AnimatePresence mode="wait">
           <motion.div
@@ -51,9 +47,6 @@ export function CenterPanel({ activeView, setActiveView, onSelectCustomer, selec
             transition={{ duration: 0.3 }}
             className="h-full w-full min-h-0 bg-[#141424]/90 rounded-xl border border-[#6A0DAD]/20 overflow-hidden flex flex-col"
           >
-            {activeView === "heat-map" && (
-              <HeatMap onSelectCustomer={onSelectCustomer} selectedId={selectedCustomerId || undefined} />
-            )}
             {activeView === "entanglement" && <EntanglementMap />}
             {activeView === "wave-function" && <WaveFunction />}
           </motion.div>
