@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { QuantumCard } from "./QuantumCard";
-import { Customer } from "../types";
-import { ArrowLeft, Shield, AlertTriangle, Zap, TrendingUp, TrendingDown, Users } from "lucide-react";
+import { ArrowLeft, Shield, AlertTriangle, Zap, TrendingUp, Users } from "lucide-react";
 import { motion } from "motion/react";
+import { useApi } from "../hooks/useApi";
+import { fetchCustomer } from "../services/api";
+import { fetchEntanglements } from "../services/api";
 
 interface ScreenEntanglementDeepDiveProps {
-  customer: Customer;
-  onBack: () => void;
-  onIntervene: () => void;
+  customerId: string;
+  onBack:     () => void;
+  onIntervene:() => void;
 }
 
-export function ScreenEntanglementDeepDive({ customer, onBack, onIntervene }: ScreenEntanglementDeepDiveProps) {
+export function ScreenEntanglementDeepDive({ customerId, onBack, onIntervene }: ScreenEntanglementDeepDiveProps) {
+  const { data: customer, loading: custLoading } = useApi(useCallback(() => fetchCustomer(customerId), [customerId]));
+  const { data: network, loading: netLoading   } = useApi(useCallback(() => fetchEntanglements(customerId), [customerId]));
+  const loading = custLoading || netLoading;
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}

@@ -1,13 +1,37 @@
 import React from "react";
 import { Users, Percent, CheckCircle, TrendingDown, ArrowDownRight } from "lucide-react";
+import { useApi } from "../hooks/useApi";
+import { fetchPortfolioSummary } from "../services/api";
 
 export function MetricsBar() {
+  const { data, loading } = useApi(fetchPortfolioSummary);
+
   const metrics = [
-    { label: "TOTAL CUSTOMERS", value: "1,462", icon: <Users className="w-4 h-4" />, color: "text-[#8A2BE2]" },
-    { label: "AVG RISK SCORE", value: "54%", icon: <Percent className="w-4 h-4" />, color: "text-[#FFD700]", trend: <TrendingDown className="w-4 h-4 text-[#00C853]" /> },
-    { label: "INTERVENTIONS (7D)", value: "87", icon: <CheckCircle className="w-4 h-4" />, color: "text-[#00C853]" },
-    { label: "SUCCESS RATE", value: "78%", icon: <Percent className="w-4 h-4" />, color: "text-[#4169E1]" },
-    { label: "RISK REDUCTION", value: "-23%", icon: <ArrowDownRight className="w-4 h-4" />, color: "text-[#00C853]" },
+    {
+      label: "TOTAL CUSTOMERS",
+      value: loading ? "—" : (data?.totalCustomers ?? 0).toLocaleString(),
+      icon: <Users className="w-4 h-4" />,
+      color: "text-[#8A2BE2]",
+    },
+    {
+      label: "AVG RISK SCORE",
+      value: loading ? "—" : `${data?.avgRiskScore ?? 0}%`,
+      icon: <Percent className="w-4 h-4" />,
+      color: "text-[#FFD700]",
+      trend: <TrendingDown className="w-4 h-4 text-[#00C853]" />,
+    },
+    {
+      label: "SUCCESS RATE",
+      value: loading ? "—" : `${data?.interventionSuccessRate ?? 0}%`,
+      icon: <CheckCircle className="w-4 h-4" />,
+      color: "text-[#00C853]",
+    },
+    {
+      label: "RISK REDUCTION",
+      value: loading ? "—" : `-${data?.avgRiskReduction ?? 0}%`,
+      icon: <ArrowDownRight className="w-4 h-4" />,
+      color: "text-[#00C853]",
+    },
   ];
 
   return (
@@ -20,7 +44,9 @@ export function MetricsBar() {
           <div>
             <p className="text-xs text-[#E6E6E6] font-medium uppercase tracking-wide">{m.label}</p>
             <div className="flex items-center gap-2">
-              <span className="text-lg font-['JetBrains_Mono'] font-bold text-white leading-none">{m.value}</span>
+              <span className={`text-lg font-['JetBrains_Mono'] font-bold text-white leading-none ${loading ? "opacity-40" : ""}`}>
+                {m.value}
+              </span>
               {m.trend && <span>{m.trend}</span>}
             </div>
           </div>

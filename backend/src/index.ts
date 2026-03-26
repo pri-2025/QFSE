@@ -5,21 +5,23 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 
-import { authRouter } from "./routes/auth";
-import { customersRouter } from "./routes/customers";
-import { interventionsRouter } from "./routes/interventions";
-import { analyticsRouter } from "./routes/analytics";
-import { snapshotsRouter } from "./routes/snapshots";
-import { errorHandler } from "./middleware/errorHandler";
-import { requestLogger } from "./middleware/requestLogger";
-import { logger } from "./utils/logger";
+import { authRouter }           from "./routes/auth";
+import { customersRouter }      from "./routes/customers";
+import { interventionsRouter }  from "./routes/interventions";
+import { analyticsRouter }      from "./routes/analytics";
+import { snapshotsRouter }      from "./routes/snapshots";
+import { entanglementsRouter }  from "./routes/entanglements";
+import { communicationsRouter } from "./routes/communications";
+import { errorHandler }         from "./middleware/errorHandler";
+import { requestLogger }        from "./middleware/requestLogger";
+import { logger }               from "./utils/logger";
 
 dotenv.config();
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3001;
 
-// ── Security & global middleware ──────────────────────────────
+// ── Security ───────────────────────────────────────────────────
 app.use(helmet());
 app.use(cors({
   origin: [
@@ -34,9 +36,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("combined", { stream: { write: (msg) => logger.http(msg.trim()) } }));
 app.use(requestLogger);
 
-// ── Rate limiting ─────────────────────────────────────────────
+// ── Rate limiting ──────────────────────────────────────────────
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 500,
   standardHeaders: true,
   legacyHeaders: false,
@@ -44,14 +46,16 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// ── Routes ────────────────────────────────────────────────────
-app.use("/api/auth",          authRouter);
-app.use("/api/customers",     customersRouter);
-app.use("/api/interventions", interventionsRouter);
-app.use("/api/analytics",     analyticsRouter);
-app.use("/api/snapshots",     snapshotsRouter);
+// ── API Routes ─────────────────────────────────────────────────
+app.use("/api/auth",           authRouter);
+app.use("/api/customers",      customersRouter);
+app.use("/api/interventions",  interventionsRouter);
+app.use("/api/analytics",      analyticsRouter);
+app.use("/api/snapshots",      snapshotsRouter);
+app.use("/api/entanglements",  entanglementsRouter);
+app.use("/api/communications", communicationsRouter);
 
-// ── Health check ──────────────────────────────────────────────
+// ── Health check ───────────────────────────────────────────────
 app.get("/health", (_req, res) => {
   res.json({
     status:    "healthy",
@@ -61,15 +65,14 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// ── 404 handler ───────────────────────────────────────────────
+// ── 404 ────────────────────────────────────────────────────────
 app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// ── Global error handler ──────────────────────────────────────
+// ── Error handler ──────────────────────────────────────────────
 app.use(errorHandler);
 
-// ── Start server ──────────────────────────────────────────────
 app.listen(PORT, () => {
   logger.info(`🚀 QFSE Backend running on port ${PORT}`);
   logger.info(`   Environment : ${process.env.NODE_ENV || "development"}`);

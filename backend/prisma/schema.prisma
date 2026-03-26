@@ -56,16 +56,17 @@ model Customer {
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 
-  persona       Persona?       @relation(fields: [personaId], references: [id])
-  loans         Loan[]
-  transactions  Transaction[]
-  riskScores    RiskScore[]
-  interventions Intervention[]
-  entanglements Entanglement[] @relation("CustomerEntanglements")
-  linkedIn      Entanglement[] @relation("LinkedCustomer")
-  timeline      TimelineEvent[]
-  snapshots     Snapshot[]
-  quarterlies   QuarterlySummary[]
+  persona           Persona?          @relation(fields: [personaId], references: [id])
+  loans             Loan[]
+  transactions      Transaction[]
+  riskScores        RiskScore[]
+  interventions     Intervention[]
+  entanglements     Entanglement[]    @relation("CustomerEntanglements")
+  linkedIn          Entanglement[]    @relation("LinkedCustomer")
+  timeline          TimelineEvent[]
+  snapshots         Snapshot[]
+  quarterlies       QuarterlySummary[]
+  communicationLogs CommunicationLog[]
 
   @@map("customers")
 }
@@ -226,4 +227,24 @@ model QuarterlySummary {
   @@unique([customerId, quarterStart])
   @@index([customerId])
   @@map("quarterly_summaries")
+}
+
+model CommunicationLog {
+  id            String    @id @default(uuid())
+  customerId    String    @map("customer_id")
+  type          String    // sms_reminder | email_nudge | call | push_notification | behavioral_alert
+  channel       String    // sms | email | phone | app | system
+  subject       String?
+  message       String?
+  outcome       String    @default("sent")  // sent | delivered | opened | responded | failed
+  responseScore Decimal?  @map("response_score")  // 0-1 engagement score
+  sentAt        DateTime  @default(now()) @map("sent_at")
+  respondedAt   DateTime? @map("responded_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([sentAt(sort: Desc)])
+  @@map("communication_logs")
 }

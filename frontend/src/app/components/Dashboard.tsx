@@ -9,56 +9,63 @@ import { SuccessModal } from "./SuccessModal";
 import { SimulatorView } from "./SimulatorView";
 import { AnalyticsPersona } from "./AnalyticsPersona";
 import { InterventionStrategies } from "./InterventionStrategies";
-import { PersonaType, Customer, CUSTOMERS } from "../types";
+import { TimelineView } from "./TimelineView";
+import { PersonaType } from "../types";
 import { AnimatePresence, motion } from "motion/react";
+import { MobileDashboard } from "./MobileDashboard";
 
-export type ScreenID = "persona-view" | "list-view" | "detail-view" | "entanglement-view" | "risk-filtered-view";
+export type ScreenID =
+  | "persona-view"
+  | "list-view"
+  | "detail-view"
+  | "entanglement-view"
+  | "risk-filtered-view"
+  | "timeline-view";
+
 export type TabID = "dashboard" | "simulator" | "analytics";
 export type AnalyticsView = "persona-analytics" | "intervention-strategies";
 
-import { MobileDashboard } from "./MobileDashboard";
-
 export function Dashboard() {
-  const [activeTab, setActiveTab] = useState<TabID>("dashboard");
-  const [currentScreen, setCurrentScreen] = useState<ScreenID>("persona-view");
-  const [selectedPersona, setSelectedPersona] = useState<PersonaType | null>(null);
+  const [activeTab,          setActiveTab]          = useState<TabID>("dashboard");
+  const [currentScreen,      setCurrentScreen]      = useState<ScreenID>("persona-view");
+  const [selectedPersona,    setSelectedPersona]    = useState<PersonaType | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessModal,   setShowSuccessModal]   = useState(false);
   const [selectedRiskLevels, setSelectedRiskLevels] = useState<string[]>([]);
-  const [analyticsView, setAnalyticsView] = useState<AnalyticsView>("persona-analytics");
-  const [strategiesPersona, setStrategiesPersona] = useState<PersonaType | null>(null);
+  const [analyticsView,      setAnalyticsView]      = useState<AnalyticsView>("persona-analytics");
+  const [strategiesPersona,  setStrategiesPersona]  = useState<PersonaType | null>(null);
 
-  const selectedCustomer = CUSTOMERS.find(c => c.id === selectedCustomerId) || null;
-
+  /* ── Navigation helpers ───────────────── */
   const navigateToPersona = (persona: PersonaType) => {
     setSelectedPersona(persona);
     setCurrentScreen("list-view");
   };
-
   const navigateToRiskFiltered = (riskLevels: string[]) => {
+    if (riskLevels.length === 0) { setCurrentScreen("persona-view"); return; }
     setSelectedRiskLevels(riskLevels);
     setCurrentScreen("risk-filtered-view");
   };
-
   const navigateToCustomer = (id: string) => {
     setSelectedCustomerId(id);
     setCurrentScreen("detail-view");
   };
-
   const navigateToEntanglement = (id: string) => {
     setSelectedCustomerId(id);
     setCurrentScreen("entanglement-view");
   };
+  const navigateToTimeline = (id: string) => {
+    setSelectedCustomerId(id);
+    setCurrentScreen("timeline-view");
+  };
 
   const goBack = () => {
-    if (currentScreen === "entanglement-view") setCurrentScreen("detail-view");
-    else if (currentScreen === "detail-view") setCurrentScreen("list-view");
-    else if (currentScreen === "list-view") setCurrentScreen("persona-view");
+    if (currentScreen === "timeline-view")     setCurrentScreen("detail-view");
+    else if (currentScreen === "entanglement-view") setCurrentScreen("detail-view");
+    else if (currentScreen === "detail-view")  setCurrentScreen("list-view");
+    else if (currentScreen === "list-view")    setCurrentScreen("persona-view");
   };
 
-  const handleInterventionSuccess = () => {
-    setShowSuccessModal(true);
-  };
+  const handleInterventionSuccess = () => setShowSuccessModal(true);
 
   const handleTabChange = (tab: TabID) => {
     if (tab === "dashboard") {
@@ -78,7 +85,6 @@ export function Dashboard() {
     setStrategiesPersona(persona);
     setAnalyticsView("intervention-strategies");
   };
-
   const handleBackToAnalytics = () => {
     setAnalyticsView("persona-analytics");
     setStrategiesPersona(null);
@@ -87,19 +93,21 @@ export function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="hidden lg:flex flex-col min-h-screen">
-        <Header 
-          activeTab={activeTab} 
+        <Header
+          activeTab={activeTab}
           onTabChange={handleTabChange}
-          onSettings={() => {}} 
-          onNotifications={() => {}} 
+          onSettings={() => {}}
+          onNotifications={() => {}}
         />
-        
+
         {activeTab === "dashboard" && <MetricsBar />}
 
         <main className="flex-1 relative">
           <AnimatePresence mode="wait">
+
+            {/* ── DASHBOARD TAB ── */}
             {activeTab === "dashboard" && (
-              <motion.div 
+              <motion.div
                 key="dashboard-tab"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -107,56 +115,61 @@ export function Dashboard() {
                 className="w-full h-full"
               >
                 {currentScreen === "persona-view" && (
-                  <ScreenPersonaView 
-                    key="persona" 
+                  <ScreenPersonaView
+                    key="persona"
                     onSelectPersona={navigateToPersona}
                     onSelectRiskLevels={navigateToRiskFiltered}
                   />
                 )}
-
                 {currentScreen === "list-view" && (
-                  <ScreenListView 
-                    key="list" 
-                    persona={selectedPersona} 
-                    onBack={() => setCurrentScreen("persona-view")} 
+                  <ScreenListView
+                    key="list"
+                    persona={selectedPersona}
+                    onBack={() => setCurrentScreen("persona-view")}
                     onSelectCustomer={navigateToCustomer}
                   />
                 )}
-
-                {currentScreen === "detail-view" && selectedCustomer && (
-                  <ScreenDetailDashboard 
-                    key="detail" 
-                    customer={selectedCustomer} 
-                    onBack={() => setCurrentScreen("list-view")}
-                    onViewEntanglement={() => navigateToEntanglement(selectedCustomer.id)}
+                {currentScreen === "risk-filtered-view" && (
+                  <ScreenListView
+                    key="risk-filtered"
+                    persona={null}
+                    riskLevels={selectedRiskLevels}
+                    onBack={() => setCurrentScreen("persona-view")}
+                    onSelectCustomer={navigateToCustomer}
+                  />
+                )}
+                {currentScreen === "detail-view" && selectedCustomerId && (
+                  <ScreenDetailDashboard
+                    key="detail"
+                    customerId={selectedCustomerId}
+                    onBack={goBack}
+                    onViewEntanglement={() => navigateToEntanglement(selectedCustomerId)}
+                    onViewTimeline={() => navigateToTimeline(selectedCustomerId)}
                     onSwitchCustomer={navigateToCustomer}
                     onIntervention={handleInterventionSuccess}
                   />
                 )}
-
-                {currentScreen === "entanglement-view" && selectedCustomer && (
-                  <ScreenEntanglementDeepDive 
-                    key="entanglement" 
-                    customer={selectedCustomer} 
+                {currentScreen === "entanglement-view" && selectedCustomerId && (
+                  <ScreenEntanglementDeepDive
+                    key="entanglement"
+                    customerId={selectedCustomerId}
                     onBack={() => setCurrentScreen("detail-view")}
                     onIntervene={handleInterventionSuccess}
                   />
                 )}
-
-                {currentScreen === "risk-filtered-view" && (
-                  <ScreenListView 
-                    key="risk-filtered" 
-                    persona={null}
-                    riskLevels={selectedRiskLevels}
-                    onBack={() => setCurrentScreen("persona-view")} 
-                    onSelectCustomer={navigateToCustomer}
+                {currentScreen === "timeline-view" && selectedCustomerId && (
+                  <TimelineView
+                    key="timeline"
+                    customerId={selectedCustomerId}
+                    onBack={() => setCurrentScreen("detail-view")}
                   />
                 )}
               </motion.div>
             )}
 
+            {/* ── SIMULATOR TAB ── */}
             {activeTab === "simulator" && (
-              <motion.div 
+              <motion.div
                 key="simulator-tab"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -167,8 +180,9 @@ export function Dashboard() {
               </motion.div>
             )}
 
+            {/* ── ANALYTICS TAB ── */}
             {activeTab === "analytics" && (
-              <motion.div 
+              <motion.div
                 key="analytics-tab"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -179,13 +193,14 @@ export function Dashboard() {
                   <AnalyticsPersona onViewStrategies={handleViewStrategies} />
                 )}
                 {analyticsView === "intervention-strategies" && strategiesPersona && (
-                  <InterventionStrategies 
-                    persona={strategiesPersona} 
+                  <InterventionStrategies
+                    persona={strategiesPersona}
                     onBack={handleBackToAnalytics}
                   />
                 )}
               </motion.div>
             )}
+
           </AnimatePresence>
         </main>
       </div>
@@ -193,9 +208,9 @@ export function Dashboard() {
       <MobileDashboard />
 
       {showSuccessModal && (
-        <SuccessModal 
-          customerName={selectedCustomer?.name || ""} 
-          onClose={() => setShowSuccessModal(false)} 
+        <SuccessModal
+          customerName="Customer"
+          onClose={() => setShowSuccessModal(false)}
         />
       )}
     </div>

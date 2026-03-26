@@ -1,25 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { QuantumCard } from "./QuantumCard";
 import { WaveFunctionGraph } from "./WaveFunctionGraph";
-import { Customer, CUSTOMERS, Signal, getPersonaColor, getPersonaEmoji } from "../types";
+import { CUSTOMERS, Customer } from "../types";
 import { ArrowLeft, ArrowRight, MessageSquare, Shield, Clock, Phone, Mail, Zap, Target, RefreshCcw, Search, ChevronRight, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { useApi } from "../hooks/useApi";
+import { fetchCustomer } from "../services/api";
 
 interface ScreenDetailDashboardProps {
-  customer: Customer;
-  onBack: () => void;
-  onViewEntanglement: () => void;
-  onSwitchCustomer: (id: string) => void;
-  onIntervention: () => void;
+  customerId:        string;
+  onBack:            () => void;
+  onViewEntanglement:() => void;
+  onViewTimeline?:   () => void;
+  onSwitchCustomer:  (id: string) => void;
+  onIntervention:    () => void;
 }
 
-export function ScreenDetailDashboard({ customer, onBack, onViewEntanglement, onSwitchCustomer, onIntervention }: ScreenDetailDashboardProps) {
+export function ScreenDetailDashboard({ customerId, onBack, onViewEntanglement, onViewTimeline, onSwitchCustomer, onIntervention }: ScreenDetailDashboardProps) {
   const [tone, setTone] = useState("Empathetic");
   const [channel, setChannel] = useState("SMS");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const personaCustomers = CUSTOMERS.filter(c => c.persona === customer.persona);
+  // Fetch live customer data
+  const { data: apiCustomer, loading } = useApi(useCallback(() => fetchCustomer(customerId), [customerId]));
+
+  // Build compatible mock shape while live data loads, or use the 15 real customers as a fallback
+  const customer: Customer | null = React.useMemo(() => {
+    if (!apiCustomer) return null;
+    // Find the existing mock customer for signal history / wave data if present
+    const mock = CUSTOMERS.find(c => c.id === apiCustomer.id) || null;
+    if (mock) return { ...mock, risk: apiCustomer.risk };
+    // Build a minimal Customer-compatible shape
+    return {
+      id:                   apiCustomer.id,
+      name:                 apiCustomer.name,
+      email:                apiCustomer.email,
+      phone:                apiCustomer.phone,
+      persona:              apiCustomer.persona as any,
+      risk:                 apiCustomer.risk,
+      riskLevel:            apiCustomer.riskState as any,
+      defaultProb:          Math.round(apiCustomer.defaultProb * 100),
+      recoveryProb:         Math.round((1 - apiCustomer.defaultProb) * 80),
+      struggleProb:         Math.round(apiCustomer.defaultProb * 60),
+      loanAmount:           `₹${(apiCustomer.loanAmount/100000).toFixed(1)}L`,
+      emi:                  `₹${(apiCustomer.emiAmount/1000).toFixed(1)}k`,
+      emiDueDays:           apiCustomer.emiDueDays,
+      affordabilitySurplus: apiCustomer.affordabilitySurplus,
+      signals:              [],
+      entanglements:        apiCustomer.entanglements || [],
+      signalHistory:        {},
+      waveData:             (apiCustomer as any).waveData || [],
+    } as any;
+  }, [apiCustomer]);
+
+  const personaCustomers = CUSTOMERS.filter(c => customer && c.persona === customer.persona);
 
   const getRiskColor = (level: string) => {
     switch (level) {
