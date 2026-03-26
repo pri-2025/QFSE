@@ -38,7 +38,7 @@ export function Header({ onSettings, onNotifications, activeTab, onTabChange }: 
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-white leading-none uppercase">
-              QUANTUM <span className="text-[#8A2BE2]">COMMAND</span>
+              QUANTUM <span className="text-[#8A2BE2]">STATE FINANCIAL ENGINE</span>
             </h1>
             <p className="text-[10px] text-[#E6E6E6] uppercase tracking-[1.5px] mt-1 font-semibold">
               Pre-Delinquency Engine

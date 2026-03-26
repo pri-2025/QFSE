@@ -1,0 +1,229 @@
+// Prisma schema for Quantum State Financial Engine
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String   @map("password_hash")
+  name          String
+  role          String   @default("analyst")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  interventions Intervention[]
+
+  @@map("users")
+}
+
+model Persona {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  color   String
+  emoji   String
+  avgRisk Int      @default(50) @map("avg_risk")
+
+  customers Customer[]
+
+  @@map("personas")
+}
+
+model Customer {
+  id                    String  @id
+  name                  String
+  email                 String  @unique
+  phone                 String
+  personaId             Int?    @map("persona_id")
+  monthlyIncome         Decimal @default(0) @map("monthly_income")
+  loanAmount            Decimal @default(0) @map("loan_amount")
+  emiAmount             Decimal @default(0) @map("emi_amount")
+  emiDueDays            Int     @default(0) @map("emi_due_days")
+  creditUtilization     Decimal @default(0) @map("credit_utilization")
+  salaryDelayFreq       Decimal @default(0) @map("salary_delay_freq")
+  emiPaymentConsistency Decimal @default(1) @map("emi_payment_consistency")
+  withdrawalSpikes      Int     @default(0) @map("withdrawal_spikes")
+  loanToIncomeRatio     Decimal @default(0) @map("loan_to_income_ratio")
+  affordabilitySurplus  Decimal @default(0) @map("affordability_surplus")
+  address               String?
+  employer              String?
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  persona       Persona?       @relation(fields: [personaId], references: [id])
+  loans         Loan[]
+  transactions  Transaction[]
+  riskScores    RiskScore[]
+  interventions Intervention[]
+  entanglements Entanglement[] @relation("CustomerEntanglements")
+  linkedIn      Entanglement[] @relation("LinkedCustomer")
+  timeline      TimelineEvent[]
+  snapshots     Snapshot[]
+  quarterlies   QuarterlySummary[]
+
+  @@map("customers")
+}
+
+model Loan {
+  id             String   @id @default(uuid())
+  customerId     String   @map("customer_id")
+  loanType       String   @default("Personal Loan") @map("loan_type")
+  sanctionedAmt  Decimal  @map("sanctioned_amt")
+  outstandingAmt Decimal  @map("outstanding_amt")
+  emiAmount      Decimal  @map("emi_amount")
+  tenureMonths   Int      @map("tenure_months")
+  interestRate   Decimal  @default(12.5) @map("interest_rate")
+  disbursedAt    DateTime @map("disbursed_at")
+  maturityDate   DateTime @map("maturity_date")
+  status         String   @default("active")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@map("loans")
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  customerId  String   @map("customer_id")
+  txnDate     DateTime @map("txn_date")
+  txnType     String   @map("txn_type")
+  amount      Decimal
+  category    String?
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([txnDate])
+  @@map("transactions")
+}
+
+model RiskScore {
+  id                String   @id @default(uuid())
+  customerId        String   @map("customer_id")
+  scoredAt          DateTime @default(now()) @map("scored_at")
+  probability       Decimal
+  riskState         String   @map("risk_state")
+  featureImportance Json?    @map("feature_importance")
+  modelVersion      String   @default("v1") @map("model_version")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([scoredAt(sort: Desc)])
+  @@map("risk_scores")
+}
+
+model Intervention {
+  id                   String   @id @default(uuid())
+  customerId           String   @map("customer_id")
+  analystId            String?  @map("analyst_id")
+  actionType           String   @map("action_type")
+  preProbability       Decimal  @map("pre_probability")
+  projectedProbability Decimal  @map("projected_probability")
+  actualProbability    Decimal? @map("actual_probability")
+  confidenceScore      Decimal  @map("confidence_score")
+  riskReductionPct     Decimal  @map("risk_reduction_pct")
+  status               String   @default("simulated")
+  notes                String?
+  simulatedAt          DateTime @default(now()) @map("simulated_at")
+  appliedAt            DateTime? @map("applied_at")
+  outcomeAt            DateTime? @map("outcome_at")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  analyst  User?    @relation(fields: [analystId], references: [id])
+
+  @@index([customerId])
+  @@index([status])
+  @@map("interventions")
+}
+
+model Entanglement {
+  id               String   @id @default(uuid())
+  customerId       String   @map("customer_id")
+  linkedCustomerId String?  @map("linked_customer_id")
+  linkedName       String   @map("linked_name")
+  relationship     String
+  linkType         String   @default("family") @map("link_type")
+  riskImpactPct    Decimal  @default(0) @map("risk_impact_pct")
+  linkedRiskScore  Decimal? @map("linked_risk_score")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  customer       Customer  @relation("CustomerEntanglements", fields: [customerId], references: [id], onDelete: Cascade)
+  linkedCustomer Customer? @relation("LinkedCustomer", fields: [linkedCustomerId], references: [id])
+
+  @@index([customerId])
+  @@map("entanglements")
+}
+
+model TimelineEvent {
+  id           String   @id @default(uuid())
+  customerId   String   @map("customer_id")
+  eventDate    DateTime @map("event_date")
+  eventType    String   @map("event_type")
+  severity     String   @default("info")
+  title        String
+  description  String?
+  riskAtEvent  Decimal? @map("risk_at_event")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([eventDate(sort: Desc)])
+  @@map("timeline_events")
+}
+
+model Snapshot {
+  id             String   @id @default(uuid())
+  customerId     String   @map("customer_id")
+  snapshotMonth  DateTime @map("snapshot_month")
+  avgBalance     Decimal? @map("avg_balance")
+  totalCredits   Decimal? @map("total_credits")
+  totalDebits    Decimal? @map("total_debits")
+  emiPaid        Boolean  @default(false) @map("emi_paid")
+  riskScore      Decimal? @map("risk_score")
+  riskState      String?  @map("risk_state")
+  savingsBalance Decimal? @map("savings_balance")
+  creditUtilPct  Decimal? @map("credit_util_pct")
+  behavioralFlags Json?   @map("behavioral_flags")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, snapshotMonth])
+  @@index([customerId])
+  @@map("snapshots")
+}
+
+model QuarterlySummary {
+  id                      String   @id @default(uuid())
+  customerId              String   @map("customer_id")
+  quarterStart            DateTime @map("quarter_start")
+  quarterLabel            String   @map("quarter_label")
+  avgRiskScore            Decimal? @map("avg_risk_score")
+  riskTrend               String?  @map("risk_trend")
+  interventionsCount      Int      @default(0) @map("interventions_count")
+  successfulInterventions Int      @default(0) @map("successful_interventions")
+  totalEmiPaid            Decimal? @map("total_emi_paid")
+  missedPayments          Int      @default(0) @map("missed_payments")
+  portfolioShiftNotes     String?  @map("portfolio_shift_notes")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, quarterStart])
+  @@index([customerId])
+  @@map("quarterly_summaries")
+}
