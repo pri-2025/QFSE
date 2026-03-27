@@ -1,3 +1,90 @@
 2026-03-26 21:43:28 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
 2026-03-26 21:43:28 [[32minfo[39m]:    Environment : development
 2026-03-26 21:43:28 [[32minfo[39m]:    ML Engine   : http://localhost:8000
+2026-03-27 17:07:05 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-27 17:07:05 [[32minfo[39m]:    Environment : production
+2026-03-27 17:07:05 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-27 17:08:07 [[32minfo[39m]: [2026-03-27T11:38:07.614Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 17:08:12 [[31merror[39m]: Prisma error: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+2026-03-27 17:08:12 [[31merror[39m]: Login error: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+PrismaClientInitializationError: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+    at $n.handleRequestError (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async <anonymous> (D:\Projects\Barclays\QFSE\backend\src\routes\auth.ts:19:18)
+2026-03-27 17:09:16 [[32minfo[39m]: [2026-03-27T11:39:16.144Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 17:09:21 [[31merror[39m]: Prisma error: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+2026-03-27 17:09:21 [[31merror[39m]: Login error: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+PrismaClientInitializationError: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+    at $n.handleRequestError (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async <anonymous> (D:\Projects\Barclays\QFSE\backend\src\routes\auth.ts:19:18)
+2026-03-27 17:10:06 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-27 17:10:06 [[32minfo[39m]:    Environment : production
+2026-03-27 17:10:06 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-27 17:10:15 [[32minfo[39m]: [2026-03-27T11:40:15.021Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 17:10:20 [[31merror[39m]: Prisma error: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+2026-03-27 17:10:20 [[31merror[39m]: Login error: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+PrismaClientInitializationError: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+Can't reach database server at `postgres:5432`
+
+Please make sure your database server is running at `postgres:5432`.
+    at $n.handleRequestError (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:7615)
+    at $n.handleAndLogRequestError (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (D:\Projects\Barclays\QFSE\backend\node_modules\@prisma\client\runtime\library.js:130:9633)
+    at async <anonymous> (D:\Projects\Barclays\QFSE\backend\src\routes\auth.ts:19:18)

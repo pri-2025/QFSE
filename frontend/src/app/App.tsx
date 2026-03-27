@@ -1,7 +1,14 @@
-import React, { useState } from "react";
-import { Dashboard } from "./components/Dashboard";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { Toaster } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
+
+import { Login } from "./components/Login";
+import { Dashboard as AdminDashboard } from "./components/Dashboard";
+import { ProtectedRoute, RoleBasedRedirect } from "./components/auth/ProtectedRoute";
+import { AdminLayout } from "./components/AdminLayout";
+import { CustomerLayout } from "./components/CustomerLayout";
+import { CustomerHome } from "./components/CustomerHome";
 
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -44,7 +51,39 @@ export default function App() {
             animate={{ opacity: 1 }}
             className="relative z-10 w-full min-h-screen"
           >
-            <Dashboard />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<RoleBasedRedirect />} />
+                
+                {/* Admin Routes */}
+                <Route path="/admin" element={
+                  <ProtectedRoute allowedRoles={["ADMIN"]}>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<AdminDashboard />} />
+                  <Route path="portfolio" element={<div className="p-8">Admin Portfolio (Placeholder)</div>} />
+                  <Route path="analytics" element={<div className="p-8">Admin Analytics (Placeholder)</div>} />
+                  <Route path="customer/:id" element={<div className="p-8">Customer Profile (Placeholder)</div>} />
+                </Route>
+
+                {/* Customer Routes */}
+                <Route path="/customer" element={
+                  <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+                    <CustomerLayout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<Navigate to="home" replace />} />
+                  <Route path="home" element={<CustomerHome />} />
+                  <Route path="risk" element={<div className="p-8">My Risk Score (Placeholder)</div>} />
+                  <Route path="timeline" element={<div className="p-8">My Timeline (Placeholder)</div>} />
+                </Route>
+                
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </BrowserRouter>
           </motion.div>
         )}
       </AnimatePresence>

@@ -5,13 +5,9 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 
-import { authRouter }           from "./routes/auth";
-import { customersRouter }      from "./routes/customers";
-import { interventionsRouter }  from "./routes/interventions";
-import { analyticsRouter }      from "./routes/analytics";
-import { snapshotsRouter }      from "./routes/snapshots";
-import { entanglementsRouter }  from "./routes/entanglements";
-import { communicationsRouter } from "./routes/communications";
+import { authRouter } from "./routes/auth";
+import { adminRouter } from "./routes/adminRoutes";
+import { customerRouter } from "./routes/customerRoutes";
 import { errorHandler }         from "./middleware/errorHandler";
 import { requestLogger }        from "./middleware/requestLogger";
 import { logger }               from "./utils/logger";
@@ -47,13 +43,9 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // ── API Routes ─────────────────────────────────────────────────
-app.use("/api/auth",           authRouter);
-app.use("/api/customers",      customersRouter);
-app.use("/api/interventions",  interventionsRouter);
-app.use("/api/analytics",      analyticsRouter);
-app.use("/api/snapshots",      snapshotsRouter);
-app.use("/api/entanglements",  entanglementsRouter);
-app.use("/api/communications", communicationsRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/customer", customerRouter);
 
 // ── Health check ───────────────────────────────────────────────
 app.get("/health", (_req, res) => {

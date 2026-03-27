@@ -103,18 +103,34 @@ async function main() {
     personaMap[p.name] = rec.id;
   }
 
-  // ── Analyst user ──────────────────────────────────────────
-  console.log("  → Seeding analyst user...");
+  // ── Admin user ──────────────────────────────────────────
+  console.log("  → Seeding admin user...");
   const pwHash = await bcrypt.hash("Qfse@2025", 12);
   await prisma.user.upsert({
-    where:  { email: "sarah.chen@qfse.bank" },
-    update: {},
+    where:  { email: "admin@qfse.com" },
+    update: { role: "ADMIN" },
     create: {
       id:           "00000000-0000-0000-0000-000000000001",
-      email:        "sarah.chen@qfse.bank",
+      email:        "admin@qfse.com",
       passwordHash: pwHash,
       name:         "Sarah Chen",
-      role:         "senior_analyst",
+      role:         "ADMIN",
+    },
+  });
+
+  // ── Customer Test User ──────────────────────────────────────
+  console.log("  → Seeding customer test user...");
+  const custPwHash = await bcrypt.hash("customer123", 12);
+  const testCustomerUserId = "00000000-0000-0000-0000-000000000002";
+  await prisma.user.upsert({
+    where:  { email: "customer@qfse.com" },
+    update: { role: "CUSTOMER" },
+    create: {
+      id:           testCustomerUserId,
+      email:        "customer@qfse.com",
+      passwordHash: custPwHash,
+      name:         "Neha Verma",
+      role:         "CUSTOMER",
     },
   });
 
@@ -141,6 +157,8 @@ async function main() {
         loanToIncomeRatio:    c.lti,
         affordabilitySurplus: c.surplus,
         employer:             c.employer,
+        // @ts-ignore
+        userId:               c.id === "CUST_01" ? testCustomerUserId : undefined,
       },
     });
 

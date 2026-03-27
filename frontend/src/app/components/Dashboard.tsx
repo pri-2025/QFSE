@@ -35,6 +35,15 @@ export function Dashboard() {
   const [analyticsView,      setAnalyticsView]      = useState<AnalyticsView>("persona-analytics");
   const [strategiesPersona,  setStrategiesPersona]  = useState<PersonaType | null>(null);
 
+  // Retrieve Admin Identity
+  const [adminUser, setAdminUser] = useState<{name: string, role: string} | null>(null);
+  React.useEffect(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem("qfse_user") || "{}");
+      if (u && u.name) setAdminUser(u);
+    } catch {}
+  }, []);
+
   /* ── Navigation helpers ───────────────── */
   const navigateToPersona = (persona: PersonaType) => {
     setSelectedPersona(persona);
@@ -98,6 +107,14 @@ export function Dashboard() {
           onTabChange={handleTabChange}
           onSettings={() => {}}
           onNotifications={() => {}}
+          onLogout={() => {
+            localStorage.removeItem("qfse_token");
+            localStorage.removeItem("qfse_user");
+            window.location.href = "/login";
+          }}
+          userName={adminUser?.name || "Admin"}
+          userRole={adminUser?.role === "ADMIN" ? "System Administrator" : "Operator"}
+          titleExtension="Admin Console"
         />
 
         {activeTab === "dashboard" && <MetricsBar />}

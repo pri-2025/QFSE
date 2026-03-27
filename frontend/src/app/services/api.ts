@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import axios, { AxiosError } from "axios";
 
 // Base URL — uses env var injected by Vite, falls back to localhost
@@ -12,9 +13,25 @@ const api = axios.create({
 // ── Auth interceptor ─────────────────────────────────────────
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("qfse_token");
+  const userStr = localStorage.getItem("qfse_user");
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  
+  // Cleanly route calls to the correct backend namespace based on role
+  if (userStr && config.url && !config.url.startsWith("/auth")) {
+    try {
+      const user = JSON.parse(userStr);
+      const prefix = user.role === "CUSTOMER" ? "/customer" : "/admin";
+      if (!config.url.startsWith(prefix)) {
+        config.url = `${prefix}${config.url}`;
+      }
+    } catch (e) {
+      console.error("Failed to parse user from local storage", e);
+    }
+  }
+  
   return config;
 });
 
@@ -229,6 +246,40 @@ export async function fetchSnapshots(customerId: string) {
 
 export async function fetchQuarterly(customerId: string) {
   const resp = await api.get(`/snapshots/quarterly/${customerId}`);
+  return resp.data;
+}
+
+// ─────────────────────────────────────────────────────────────
+// CUSTOMER PORTAL
+// ─────────────────────────────────────────────────────────────
+
+export async function fetchMyProfile() {
+  const resp = await api.get('/me');
+  return resp.data;
+}
+
+export async function fetchMyRisk() {
+  const resp = await api.get('/risk');
+  return resp.data;
+}
+
+export async function fetchMyTimeline() {
+  const resp = await api.get('/timeline');
+  return resp.data;
+}
+
+export async function fetchMyInterventions() {
+  const resp = await api.get('/interventions');
+  return resp.data;
+}
+
+export async function fetchMySnapshot() {
+  const resp = await api.get('/snapshot');
+  return resp.data;
+}
+
+export async function acceptMyIntervention(interventionId: string) {
+  const resp = await api.post('/accept-intervention', { interventionId });
   return resp.data;
 }
 
