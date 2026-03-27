@@ -110,20 +110,12 @@ interventionsRouter.post(
       }
 
       const features = {
-        salary_delay_days:       latestSnapshot.salaryDelayDays,
-        salary_vs_expected:      Number(latestSnapshot.salaryVsExpected) || 1.0,
-        emi_bounce_count:        latestSnapshot.emiBounceCount,
-        savings_to_salary_ratio: Number(latestSnapshot.savingsToSalaryRatio) || 0.0,
-        min_balance_breach:      latestSnapshot.minBalanceBreach,
-        upi_to_lenders_count:    latestSnapshot.upiToLendersCount,
-        atm_withdrawal_count:    latestSnapshot.atmWithdrawalCount,
-        atm_to_salary_ratio:     Number(latestSnapshot.atmToSalaryRatio) || 0.0,
-        loan_enquiry_count:      latestSnapshot.loanEnquiryCount,
-        inward_return_count:     latestSnapshot.inwardReturnCount,
-        credit_score:            latestSnapshot.creditScore || 700,
-        emi_to_income:           Number(latestSnapshot.emiToIncome) || 0.0,
-        account_vintage_months:  latestSnapshot.accountVintageMonths || 12,
-        n_emis:                  latestSnapshot.nEmis || 1
+        income: Number(customer.monthlyIncome) || 50000,
+        emi_ratio: Number(latestSnapshot.emiToIncome) || (Number(customer.emiAmount) / Number(customer.monthlyIncome || 1)) || 0.4,
+        savings_ratio: Number(latestSnapshot.savingsToSalaryRatio) || 0.1,
+        credit_utilization: Number(latestSnapshot.creditUtilPct || customer.creditUtilization) || 0.6,
+        spending_volatility: 0.5,
+        transaction_irregularity: 0.5
       };
 
       const mlResult = await simulateIntervention(features, actionType);
@@ -199,6 +191,19 @@ interventionsRouter.post(
           appliedAt:            (body.status ?? "applied") === "applied" ? new Date() : null,
         },
       });
+
+      if (body.status === "applied") {
+         const riskLevel = body.projectedProbability < 0.30 ? "LOW" : body.projectedProbability < 0.75 ? "MEDIUM" : "HIGH";
+         await prisma.riskScore.create({
+            data: {
+              customerId: body.customerId,
+              probability: body.projectedProbability,
+              riskState: riskLevel,
+              featureImportance: {},
+              modelVersion: "local-xgboost-v1"
+            }
+         });
+      }
 
       res.status(201).json(intervention);
     } catch (err) {

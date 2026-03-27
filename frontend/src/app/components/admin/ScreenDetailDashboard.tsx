@@ -66,6 +66,14 @@ export function ScreenDetailDashboard({ customerId, onBack, onViewEntanglement, 
     }
   };
 
+  if (!customer) {
+    return (
+      <div className="min-h-screen bg-[#0A0A14] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-[#6A0DAD] border-t-white animate-spin" />
+      </div>
+    );
+  }
+
   const currentIndex = personaCustomers.findIndex(c => c.id === customer.id);
   const nextCustomer = personaCustomers[currentIndex + 1];
   const prevCustomer = personaCustomers[currentIndex - 1];
@@ -415,6 +423,7 @@ export function ScreenDetailDashboard({ customerId, onBack, onViewEntanglement, 
                   <h4 className="text-[10px] font-bold text-[#B0B0C0] uppercase tracking-widest">ACTIVE SIGNALS - DETAILED BREAKDOWN</h4>
                   <div className="space-y-4">
                     {Object.entries(customer.signalHistory || {}).map(([name, history], idx) => {
+                      if (!history || history.length === 0) return null;
                       const current = history[history.length - 1];
                       const peak = [...history].sort((a,b) => b.intensity - a.intensity)[0];
                       const eventsCount = history.filter(h => h.event).length;
@@ -428,11 +437,11 @@ export function ScreenDetailDashboard({ customerId, onBack, onViewEntanglement, 
                           <div className="p-4 grid grid-cols-2 gap-y-3">
                             <div>
                               <p className="text-[10px] text-[#B0B0C0] uppercase font-bold tracking-widest">Current</p>
-                              <p className="text-[12px] font-bold text-white">{current.intensity}% Intensity</p>
+                              <p className="text-[12px] font-bold text-white">{current?.intensity || 0}% Intensity</p>
                             </div>
                             <div>
                               <p className="text-[10px] text-[#B0B0C0] uppercase font-bold tracking-widest">Peak</p>
-                              <p className="text-[12px] font-bold text-white">{peak.intensity}% (Day {peak.day})</p>
+                              <p className="text-[12px] font-bold text-white">{peak?.intensity || 0}% (Day {peak?.day || 0})</p>
                             </div>
                             <div>
                               <p className="text-[10px] text-[#B0B0C0] uppercase font-bold tracking-widest">Frequency</p>

@@ -51,7 +51,7 @@ export function Login() {
             <Zap className="w-10 h-10 text-[#8A2BE2]" />
           </motion.div>
           <h1 className="text-4xl font-bold tracking-tight text-white mb-2">
-            QUANTUM <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8A2BE2] to-[#6A0DAD]">PRE-DELINQUENCY</span>
+            QUANTUM <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8A2BE2] to-[#6A0DAD]">STATE FINANCIAL</span> ENGINE
           </h1>
           <p className="text-[#B0B0C0] uppercase text-xs tracking-[2px]">Command Center v4.0.0</p>
         </div>

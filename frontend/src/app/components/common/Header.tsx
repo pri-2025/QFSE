@@ -22,7 +22,7 @@ export function Header({
   activeTab, 
   onTabChange, 
   tabs,
-  titleExtension = "Pre-Delinquency Engine",
+  titleExtension = "State Financial Engine",
   userName = "Sarah Chen",
   userRole = "Senior Analyst"
 }: HeaderProps) {

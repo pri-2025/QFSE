@@ -359,3 +359,62 @@ Error: ML Engine unavailable
 2026-03-28 01:06:11 [[33mwarn[39m]: Skipping customer CUST_01: No recent snapshot found.
 2026-03-28 01:06:11 [[32minfo[39m]: Monthly ML prediction sweep completed.
 2026-03-28 01:06:32 [[32minfo[39m]: [2026-03-27T19:36:32.844Z] User: anonymous | Role: none | POST /api/predict
+2026-03-28 01:09:05 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-28 01:09:05 [[32minfo[39m]:    Environment : production
+2026-03-28 01:09:05 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-28 01:09:05 [[32minfo[39m]: Scheduling monthly prediction job with cron: 0 0 1 * *
+2026-03-28 01:09:05 [[32minfo[39m]: Executing initial sweep on startup as requested...
+2026-03-28 01:09:05 [[32minfo[39m]: Starting monthly ML prediction sweep for all active customers.
+2026-03-28 01:09:05 [[33mwarn[39m]: Skipping customer CUST_01: No recent snapshot found.
+2026-03-28 01:09:05 [[32minfo[39m]: Monthly ML prediction sweep completed.
+2026-03-28 01:09:31 [[32minfo[39m]: [2026-03-27T19:39:31.464Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-28 01:09:32 [[32minfo[39m]: [2026-03-27T19:39:32.915Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-28 01:09:32 [[32minfo[39m]: [2026-03-27T19:39:32.957Z] User: anonymous | Role: none | GET /api/admin/analytics/personas
+2026-03-28 01:09:33 [[32minfo[39m]: [2026-03-27T19:39:33.109Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-28 01:09:36 [[32minfo[39m]: [2026-03-27T19:39:36.869Z] User: anonymous | Role: none | GET /api/admin/customers
+2026-03-28 01:09:45 [[32minfo[39m]: [2026-03-27T19:39:45.345Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-28 01:09:46 [[32minfo[39m]: [2026-03-27T19:39:46.623Z] User: anonymous | Role: none | GET /api/customer/me
+2026-03-28 01:09:46 [[32minfo[39m]: [2026-03-27T19:39:46.635Z] User: anonymous | Role: none | GET /api/customer/snapshot
+2026-03-28 01:09:46 [[32minfo[39m]: [2026-03-27T19:39:46.647Z] User: anonymous | Role: none | GET /api/customer/risk-trend
+2026-03-28 01:09:52 [[32minfo[39m]: [2026-03-27T19:39:52.094Z] User: anonymous | Role: none | GET /api/customer/risk-trend
+2026-03-28 01:09:52 [[32minfo[39m]: [2026-03-27T19:39:52.104Z] User: anonymous | Role: none | GET /api/customer/risk
+2026-03-28 01:09:53 [[32minfo[39m]: [2026-03-27T19:39:53.311Z] User: anonymous | Role: none | GET /api/customer/snapshot
+2026-03-28 01:09:57 [[32minfo[39m]: [2026-03-27T19:39:57.858Z] User: anonymous | Role: none | GET /api/customer/interventions
+2026-03-28 01:09:58 [[32minfo[39m]: [2026-03-27T19:39:58.735Z] User: anonymous | Role: none | GET /api/customer/timeline
+2026-03-28 01:09:59 [[32minfo[39m]: [2026-03-27T19:39:59.436Z] User: anonymous | Role: none | GET /api/customer/repayment-plan
+2026-03-28 01:10:00 [[32minfo[39m]: [2026-03-27T19:40:00.414Z] User: anonymous | Role: none | GET /api/customer/notifications
+2026-03-28 01:10:00 [[32minfo[39m]: [2026-03-27T19:40:00.918Z] User: anonymous | Role: none | GET /api/customer/me
+2026-03-28 01:10:00 [[32minfo[39m]: [2026-03-27T19:40:00.927Z] User: anonymous | Role: none | GET /api/customer/entanglement-summary
+2026-03-28 01:10:07 [[32minfo[39m]: [2026-03-27T19:40:07.083Z] User: anonymous | Role: none | GET /api/customer/me
+2026-03-28 01:10:07 [[32minfo[39m]: [2026-03-27T19:40:07.090Z] User: anonymous | Role: none | GET /api/customer/snapshot
+2026-03-28 01:10:07 [[32minfo[39m]: [2026-03-27T19:40:07.098Z] User: anonymous | Role: none | GET /api/customer/risk-trend
+2026-03-28 01:15:02 [[32minfo[39m]: [2026-03-27T19:45:02.117Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-28 01:15:03 [[32minfo[39m]: [2026-03-27T19:45:03.369Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-28 01:15:03 [[32minfo[39m]: [2026-03-27T19:45:03.378Z] User: anonymous | Role: none | GET /api/admin/analytics/personas
+2026-03-28 01:15:03 [[32minfo[39m]: [2026-03-27T19:45:03.521Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-28 01:15:07 [[32minfo[39m]: [2026-03-27T19:45:07.430Z] User: anonymous | Role: none | GET /api/admin/customers
+2026-03-28 01:15:09 [[32minfo[39m]: [2026-03-27T19:45:09.526Z] User: anonymous | Role: none | POST /api/admin/interventions/simulate
+2026-03-28 01:25:53 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-28 01:25:53 [[32minfo[39m]:    Environment : production
+2026-03-28 01:25:53 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-28 01:25:53 [[32minfo[39m]: Scheduling monthly prediction job with cron: 0 0 1 * *
+2026-03-28 01:25:53 [[32minfo[39m]: Executing initial sweep on startup as requested...
+2026-03-28 01:25:53 [[32minfo[39m]: Starting monthly ML prediction sweep for all active customers.
+2026-03-28 01:25:53 [[33mwarn[39m]: Skipping customer CUST_01: No recent snapshot found.
+2026-03-28 01:25:53 [[32minfo[39m]: Monthly ML prediction sweep completed.
+2026-03-28 01:26:12 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-28 01:26:12 [[32minfo[39m]:    Environment : production
+2026-03-28 01:26:12 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-28 01:26:12 [[32minfo[39m]: Scheduling monthly prediction job with cron: 0 0 1 * *
+2026-03-28 01:26:12 [[32minfo[39m]: Executing initial sweep on startup as requested...
+2026-03-28 01:26:12 [[32minfo[39m]: Starting monthly ML prediction sweep for all active customers.
+2026-03-28 01:26:13 [[33mwarn[39m]: Skipping customer CUST_01: No recent snapshot found.
+2026-03-28 01:26:13 [[32minfo[39m]: Monthly ML prediction sweep completed.
+2026-03-28 01:28:05 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-28 01:28:05 [[32minfo[39m]:    Environment : production
+2026-03-28 01:28:05 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-28 01:28:05 [[32minfo[39m]: Scheduling monthly prediction job with cron: 0 0 1 * *
+2026-03-28 01:28:05 [[32minfo[39m]: Executing initial sweep on startup as requested...
+2026-03-28 01:28:05 [[32minfo[39m]: Starting monthly ML prediction sweep for all active customers.
+2026-03-28 01:28:06 [[33mwarn[39m]: Skipping customer CUST_01: No recent snapshot found.
+2026-03-28 01:28:06 [[32minfo[39m]: Monthly ML prediction sweep completed.
