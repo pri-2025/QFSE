@@ -294,3 +294,33 @@ Error: ML Engine unavailable
     at simulateIntervention (D:\Projects\Barclays\QFSE\backend\src\services\mlService.ts:69:11)
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async <anonymous> (D:\Projects\Barclays\QFSE\backend\src\routes\interventions.ts:112:24)
+2026-03-27 23:40:05 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-27 23:40:05 [[32minfo[39m]:    Environment : production
+2026-03-27 23:40:05 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-27 23:48:22 [[32minfo[39m]: [2026-03-27T18:18:22.222Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 23:48:24 [[32minfo[39m]: [2026-03-27T18:18:24.110Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:48:24 [[32minfo[39m]: [2026-03-27T18:18:24.140Z] User: anonymous | Role: none | GET /api/admin/analytics/personas
+2026-03-27 23:48:24 [[32minfo[39m]: [2026-03-27T18:18:24.297Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:48:46 [[32minfo[39m]: [2026-03-27T18:18:46.319Z] User: anonymous | Role: none | GET /api/admin/customers
+2026-03-27 23:49:01 [[32minfo[39m]: [2026-03-27T18:19:01.133Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:49:01 [[32minfo[39m]: [2026-03-27T18:19:01.442Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:49:01 [[32minfo[39m]: [2026-03-27T18:19:01.453Z] User: anonymous | Role: none | GET /api/admin/analytics/personas
+2026-03-27 23:49:06 [[32minfo[39m]: [2026-03-27T18:19:06.913Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 23:49:08 [[32minfo[39m]: [2026-03-27T18:19:08.290Z] User: anonymous | Role: none | GET /api/customer/me
+2026-03-27 23:49:08 [[32minfo[39m]: [2026-03-27T18:19:08.302Z] User: anonymous | Role: none | GET /api/customer/snapshot
+2026-03-27 23:49:08 [[32minfo[39m]: [2026-03-27T18:19:08.319Z] User: anonymous | Role: none | GET /api/customer/risk-trend
+2026-03-27 23:58:54 [[32minfo[39m]: 🚀 QFSE Backend running on port 3001
+2026-03-27 23:58:54 [[32minfo[39m]:    Environment : production
+2026-03-27 23:58:54 [[32minfo[39m]:    ML Engine   : http://ml-engine:8000
+2026-03-27 23:59:02 [[32minfo[39m]: [2026-03-27T18:29:02.903Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 23:59:04 [[32minfo[39m]: [2026-03-27T18:29:04.549Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:59:04 [[32minfo[39m]: [2026-03-27T18:29:04.574Z] User: anonymous | Role: none | GET /api/admin/analytics/personas
+2026-03-27 23:59:04 [[32minfo[39m]: [2026-03-27T18:29:04.773Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:59:09 [[32minfo[39m]: [2026-03-27T18:29:09.339Z] User: anonymous | Role: none | GET /api/admin/customers
+2026-03-27 23:59:10 [[32minfo[39m]: [2026-03-27T18:29:10.710Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:59:11 [[32minfo[39m]: [2026-03-27T18:29:11.036Z] User: anonymous | Role: none | GET /api/admin/analytics/summary
+2026-03-27 23:59:11 [[32minfo[39m]: [2026-03-27T18:29:11.047Z] User: anonymous | Role: none | GET /api/admin/analytics/personas
+2026-03-27 23:59:16 [[32minfo[39m]: [2026-03-27T18:29:16.136Z] User: anonymous | Role: none | POST /api/auth/login
+2026-03-27 23:59:17 [[32minfo[39m]: [2026-03-27T18:29:17.400Z] User: anonymous | Role: none | GET /api/customer/me
+2026-03-27 23:59:17 [[32minfo[39m]: [2026-03-27T18:29:17.411Z] User: anonymous | Role: none | GET /api/customer/snapshot
+2026-03-27 23:59:17 [[32minfo[39m]: [2026-03-27T18:29:17.424Z] User: anonymous | Role: none | GET /api/customer/risk-trend
