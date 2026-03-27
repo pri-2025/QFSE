@@ -1,517 +1,596 @@
-# Quantum State Financial Engine (QFSE)
+Quantum State Financial Engine (QFSE)
 
-<<<<<<< HEAD
-> **Pre-Delinquency Intervention Platform** — Detects financial instability before default using ML and enables predictive, data-driven intervention.
+> Pre-Delinquency Intervention Platform
+Detects financial instability before default using Machine Learning, Network Theory, and Predictive Simulation.
 
----
 
-## Architecture
 
-```mermaid
-graph TB
-    FE["Frontend\nReact + Vite + TypeScript\nlocalhost:5173"]
-    BE["Backend\nNode.js + Express + Prisma\nlocalhost:3001"]
-    ML["ML Engine\nPython + FastAPI\nlocalhost:8000"]
-    DB["PostgreSQL 16\nlocalhost:5432"]
-
-    FE -->|JWT REST| BE
-    BE -->|Feature vector| ML
-    BE -->|Prisma ORM| DB
-    ML -->|Risk score + delta| BE
-```
-
-```
-/QFSE
-├── frontend/         React + Vite + TypeScript + TailwindCSS + Recharts
-├── backend/          Node.js + Express + Prisma ORM + Zod validation
-├── ml-engine/        Python + FastAPI + scikit-learn
-├── database/         PostgreSQL schema SQL
-└── docker-compose.yml
-```
 
 ---
 
-## Quick Start (Docker)
+Executive Summary
 
-```bash
-docker-compose up --build
-```
+Traditional financial risk systems evaluate customers in isolation.
+QFSE models financial instability as a dynamic interconnected ecosystem.
 
-**On first boot the system automatically:**
-1. Waits for PostgreSQL to be ready
-2. Runs `prisma migrate deploy`
-3. Seeds 100 synthetic customers (idempotent)
-4. Generates ML training dataset (if absent)
-5. Trains the Random Forest model (≈60s)
-6. Starts all services
+Instead of asking:
 
-| Service    | URL                   |
-|------------|-----------------------|
-| Frontend   | http://localhost:5173 |
-| Backend    | http://localhost:3001 |
-| ML Engine  | http://localhost:8000 |
-| PostgreSQL | localhost:5432        |
+> “Will this customer default?”
 
-**Default login:** `sarah.chen@qfse.bank` / `Qfse@2025`
 
----
 
-## Demo Walkthrough
+QFSE asks:
 
-1. **Login** → Enter credentials above
-2. **Dashboard** → View live portfolio metrics (total customers, avg risk, intervention success rate)
-3. **Persona View** → Distribution pie charts (persona + risk state breakdown)
-4. **List View** → Filter customers by risk state; click any customer
-5. **Customer Profile** → Quantum state probabilities, active signals, wave function graph, entanglement network
-6. **Simulator** → Select customer + intervention strategy → Execute → See ML-computed `delta`, `originalRisk`, `simulatedRisk`, `riskReductionPct`
-7. **Entanglement Deep-Dive** → Social-financial topology with contagion score
-8. **Timeline** → Chronological event log with communications and interventions
+> “How does risk evolve, spread, and respond to intervention over time?”
+
+
+
+The platform enables:
+
+Individual default probability prediction
+
+Relationship-based contagion modeling
+
+Scenario simulation for proactive intervention
+
+Behavioral communication tracking
+
+Longitudinal risk analytics
+
+
 
 ---
 
-## Database Schema Overview
+Table of Contents
 
-| Model             | Purpose                                      |
-|-------------------|----------------------------------------------|
-| `User`            | Analyst accounts (JWT auth)                  |
-| `Persona`         | Customer risk archetypes (Chronic Stresser…) |
-| `Customer`        | Core financial profile + ML feature columns  |
-| `RiskScore`       | ML-computed probability snapshots over time  |
-| `Loan`            | Loan portfolio per customer                  |
-| `Entanglement`    | Social-financial links (family, guarantor…)  |
-| `Intervention`    | Simulated and applied intervention history   |
-| `CommunicationLog`| Communication events with behavioral impact  |
-| `TimelineEvent`   | Chronological event log per customer         |
-| `Snapshot`        | Monthly financial snapshots                  |
+1. Problem Statement
 
----
 
-## ML Explanation
+2. System Architecture
 
-The ML engine uses a **Random Forest classifier** trained on 10,000 synthetic customer records.
 
-### Feature Vector (7 features)
+3. Core Capabilities
 
-| Feature | Description | Range |
-|---------|-------------|-------|
-| `salary_delay_freq` | How often salary is delayed | 0–1 |
-| `credit_utilization_ratio` | Credit card usage vs limit | 0–1 |
-| `emi_payment_consistency` | % of EMIs paid on time | 0–1 |
-| `withdrawal_spikes` | Unusual ATM withdrawal activity | 0–1 |
-| `loan_to_income_ratio` | Loan balance / monthly income | 0–5 |
-| `past_intervention_success` | History of responding to interventions | 0–1 |
-| `linked_instability_score` | Contagion-weighted network risk (see below) | 0–1 |
 
-### Output
-```json
-{
-  "probability": 0.82,
-  "risk_state": "Imminent Default",
-  "feature_importance": { "salary_delay_freq": 0.31, "credit_utilization_ratio": 0.22 },
-  "confidence_score": 0.64,
-  "model_name": "Random Forest"
-}
-```
+4. Technical Stack
 
-### Risk States
-| Probability | State |
-|-------------|-------|
-| < 30% | Healthy |
-| 30–50% | Watchlist |
-| 50–75% | At Risk |
-| > 75% | Imminent Default |
 
-### Simulation Engine
-When a strategy is selected, the ML engine modifies relevant features per strategy:
+5. Machine Learning Design
 
-| Strategy | Feature Delta |
-|----------|---------------|
-| EMI Holiday | `emi_payment_consistency +0.25`, `salary_delay_freq −0.10` |
-| Loan Restructuring | `loan_to_income_ratio −0.20`, `emi_payment_consistency +0.15` |
-| Partial Payment Plan | `emi_payment_consistency +0.20`, `withdrawal_spikes −0.15` |
-| Flexible Repayment | All three features improved |
 
-Returns `{ originalRisk, simulatedRisk, delta, riskReductionPct }` — no static arithmetic.
+6. Database Design
+
+
+7. API Endpoints
+
+
+8. Setup & Execution
+
+
+9. Security
+
+
+10. Demo Flow
+
+
+11. Design Philosophy
+
+
+12. Future Roadmap
+
+
+13. Limitations
+
+
+14. License
+
+
+
 
 ---
 
-## Entanglement Contagion Model
+1. Problem Statement
 
-Each customer can have social-financial links to other customers or external parties.
+Most credit risk systems:
 
-### Weight Factors
+Use static scoring
 
-| Link Type | Weight |
-|-----------|--------|
-| `guarantor` | 0.7 |
-| `co_borrower` | 0.6 |
-| `family` | 0.5 |
-| `shared_address` | 0.4 |
-| `shared_employer` | 0.3 |
+Evaluate customers independently
 
-### Contagion Score Formula
+React after delinquency
 
-```
-contagionScore = (baseRisk + Σ(linkedRisk × weight)) / (1 + Σ(weight))
-```
 
-Normalized to **[0, 1]**. A customer with a high-risk guarantor will have their contagion score elevated even if their own base risk is low.
+This reactive approach:
 
-This score also feeds into the ML engine as `linked_instability_score` when running simulations.
+Misses contagion risk
 
-### Communication Intelligence
+Fails to model behavior shifts
 
-Every communication logged (SMS, email, call) slightly reduces the customer's risk probability:
+Lacks intervention simulation
 
-| Channel | Risk Adjustment |
-|---------|----------------|
-| `call` | −2.0% |
-| `behavioral_alert` | −1.5% |
-| `sms_reminder` | −1.0% |
-| `email_nudge` | −1.0% |
-| Positive response (score > 0.7) | Additional −3.0% |
+
+QFSE introduces:
+
+Predictive modeling
+
+Network-aware risk propagation
+
+Intervention outcome simulation
+
+Behavioral risk adjustment
+
+
 
 ---
 
-## API Reference
+2. System Architecture
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/login` | Login → returns JWT |
+High-Level Architecture
 
-### Customers
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/customers` | List (filterable by persona, riskState) |
-| GET | `/api/customers/:id` | Full profile + timeline + loans |
-| POST | `/api/customers/:id/refresh-risk` | Re-score via ML |
-| GET | `/api/customers/:id/timeline` | Chronological events |
-| GET | `/api/customers/:id/risk-history` | Risk trend |
+Frontend (React + Vite)
+        |
+        v
+Backend API (Node + Express)
+        |
+        v
+PostgreSQL Database
+        |
+        v
+Machine Learning Service (Python + scikit-learn)
 
-### Interventions
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/interventions/simulate` | Simulate → returns `{originalRisk, simulatedRisk, delta}` |
-| POST | `/api/interventions` | Save applied intervention |
-| GET | `/api/interventions?customerId=X` | Intervention history |
-
-### Entanglements
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/entanglements/:customerId` | Social-financial graph + contagionScore |
-
-### Communications
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/communications/:customerId` | Communication log (filterable) |
-| POST | `/api/communications/log` | Log event → adjusts risk score |
-| PATCH | `/api/communications/:id/outcome` | Update response outcome |
-
-### Analytics
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/analytics/summary` | Portfolio overview |
-| GET | `/api/analytics/personas` | Persona distribution |
-| GET | `/api/analytics/risk-migration` | Risk state trends |
-
-### ML Engine
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Model metadata + accuracy |
-| POST | `/predict-risk` | Predict default probability |
-| POST | `/simulate-intervention?action_type=X` | Simulate with delta |
-| POST | `/retrain` | Trigger background retraining |
 
 ---
 
-## Local Development
+Component Overview
 
-### Prerequisites
-Node.js 20+, Python 3.11+, PostgreSQL 16
+Frontend
 
-```bash
-# 1. Database
-psql -U postgres -c "CREATE USER qfse_user WITH PASSWORD 'qfse_password';"
-psql -U postgres -c "CREATE DATABASE qfse_db OWNER qfse_user;"
+React
 
-# 2. Backend
-cd backend
-cp .env.example .env
-npm install
-npx prisma migrate dev --name init
-npx prisma db seed
-npm run dev          # :3001
+Vite
 
-# 3. ML Engine  
-cd ml-engine
-pip install -r requirements.txt
-python generate_dataset.py
-python train_model.py
-uvicorn main:app --reload --port 8000
+TypeScript
 
-# 4. Frontend
-cd frontend
-npm install
-npm run dev          # :5173
-```
+Axios
 
----
+Dynamic graph visualization
 
-## Tech Stack
+Timeline analytics dashboard
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, Vite 6, TypeScript, TailwindCSS 4, Recharts, Lucide |
-| Backend | Node.js 20, Express 4, Prisma 5, JWT, Zod, Helmet, Morgan |
-| ML | Python 3.11, FastAPI, scikit-learn, Pandas, NumPy, Joblib |
-| Database | PostgreSQL 16 |
-| DevOps | Docker, Docker Compose |
 
-**All technologies are 100% free and open-source.**
+Backend
 
----
+Node.js
 
-## Running Tests
+Express
 
-```bash
-cd backend
-npm test
-```
+Prisma ORM
 
-Covers: login, customer list/detail, simulation delta structure, intervention save, analytics summary, health check.
+PostgreSQL
 
----
+JWT authentication
 
-## Future Roadmap
+Validation middleware
 
-- Real-time WebSocket notifications for Imminent Default state changes
-- User role management (Admin vs Analyst) with RBAC
-- Expanded CommunicationLog UI with full SMS/email render history
-- Automated A/B testing of intervention strategies
-- Model explainability (SHAP values) in customer profile view
-- Portfolio-level contagion cascade simulation
+Rate limiting
 
-## Known Limitations
 
-- ML model trained on synthetic data — prediction accuracy improves with real banking data
-- Entanglement risk links are seeded; in production these come from loan origination systems
-- Communication SMS/email delivery is simulated (no actual send gateway integrated)
-- JWT expiry is 7 days; rotation/refresh not yet implemented
-=======
-Quantum State Financial Engine (QFSE) is a full-stack financial risk intelligence platform that models customer instability, contagion risk propagation, behavioral interventions, and communication impact using a network-driven approach.
+Machine Learning Service
 
-The system enables financial institutions to proactively detect, simulate, and mitigate default risk instead of relying solely on static credit scoring models.
+Python
+
+scikit-learn
+
+Synthetic dataset generator
+
+Logistic Regression classifier
+
+Auto-training if model missing
+
+
+Infrastructure
+
+Docker
+
+Docker Compose
+
+Containerized multi-service deployment
+
+
 
 ---
 
-## 1. Overview
+3. Core Capabilities
 
-Traditional risk systems evaluate customers independently. QFSE models financial risk as a dynamic ecosystem.
-
-The platform:
-
-1. Predicts individual default probability using machine learning
-2. Models interconnected customers through a relationship network
-3. Simulates intervention scenarios
-4. Tracks communication effectiveness
-5. Computes contagion risk propagation
-6. Visualizes instability evolution over time
-
-This approach enables proactive risk management.
 
 ---
 
-## 2. Architecture
+3.1 Individual Risk Prediction
 
-Frontend:
+Each customer receives:
 
-* React
-* Vite
-* TypeScript
-* Axios for API communication
+Probability of Default (0–1)
 
-Backend:
+Stored risk score
 
-* Node.js
-* Express
-* Prisma ORM
-* PostgreSQL
+Feature-driven prediction
 
-Machine Learning Service:
 
-* Python
-* scikit-learn
-* Synthetic dataset generation
-* Logistic Regression classifier
+Features include:
 
-Infrastructure:
+Income
 
-* Docker
-* Docker Compose
+Debt ratio
+
+Payment history
+
+Behavioral signals
+
+Communication engagement
+
+
 
 ---
 
-## 3. Core Features
+3.2 Entanglement Network (Contagion Modeling)
 
-### 3.1 Customer Risk Prediction
+Customers are linked via relationships:
 
-* Machine learning model predicts probability of default
-* Risk score persisted in database
-* Feature-based prediction using financial and behavioral signals
-* Probability output normalized between 0 and 1
+Shared address
 
----
+Co-borrower
 
-### 3.2 Entanglement Network (Contagion Modeling)
+Guarantor
 
-The system models relationships between customers, including:
+Shared employer
 
-* Shared address
-* Co-borrower
-* Guarantor
-* Shared employer
 
-Contagion score formula:
+Contagion Formula
 
 contagionScore = baseRisk + Σ(linkedCustomerRisk × weightFactor)
 
-Weight factors:
+Weight Factors
 
-* Shared address: 0.4
-* Co-borrower: 0.6
-* Guarantor: 0.7
-* Shared employer: 0.3
+Relationship Type	Weight
 
-The final score is normalized between 0 and 1.
+Shared Address	0.4
+Co-borrower	0.6
+Guarantor	0.7
+Shared Employer	0.3
 
-The backend returns a structured graph containing:
 
-* Nodes
-* Edges
-* Contagion score
+Final score normalized between 0 and 1.
+
+Backend returns:
+
+Nodes
+
+Edges
+
+Aggregated contagion score
+
+
 
 ---
 
-### 3.3 Simulation Engine
+3.3 Simulation Engine
 
-The simulation engine enables analysts to model intervention scenarios such as:
+Enables proactive intervention modeling.
 
-* Salary stability improvement
-* Debt restructuring
-* Behavioral improvement
-* Payment discipline enhancement
+Example Scenarios
 
-Simulation flow:
+Increase salary stability
 
-1. Fetch real customer features
+Debt restructuring
+
+Improved payment discipline
+
+Behavioral stabilization
+
+
+Simulation Flow
+
+1. Fetch original customer features
+
+
 2. Modify selected feature
-3. Recalculate ML prediction
-4. Compute delta between original and simulated risk
+
+
+3. Recalculate ML probability
+
+
+4. Compute delta
+
+
 5. Persist simulation history
 
-Response format:
+
+
+Response Format
 
 {
-originalRisk,
-simulatedRisk,
-delta,
-modifiedFeature
+  "originalRisk": 0.72,
+  "simulatedRisk": 0.51,
+  "delta": -0.21,
+  "modifiedFeature": "income"
 }
 
----
-
-### 3.4 Communication Intelligence Layer
-
-The platform tracks:
-
-* Email communications
-* SMS interventions
-* Phone calls
-* Engagement responses
-
-Communication logs:
-
-* Stored in database
-* Displayed in timeline
-* Influence behavioral stability
-* Adjust overall risk probability
 
 ---
 
-### 3.5 Timeline Analytics
+3.4 Communication Intelligence Layer
 
-Each customer profile includes:
+Tracks:
 
-* Key Events Timeline
-* Monthly Snapshots
-* Quarterly Summary
-* Communication history
-* Risk evolution tracking
+Email outreach
 
-This provides longitudinal visibility into customer instability.
+SMS alerts
+
+Phone calls
+
+Engagement responses
+
+
+Effects:
+
+Behavioral feature adjustment
+
+Risk recalibration
+
+Timeline logging
+
+
+All communications stored in CommunicationLog.
+
 
 ---
 
-## 4. Database Schema Overview
+3.5 Timeline Analytics
 
-Core models:
+Each customer profile contains:
 
-* Customer
-* RiskScore
-* Relationship
-* CommunicationLog
-* SimulationHistory
+Key Events Timeline
 
-Database managed using Prisma ORM.
+Monthly Risk Snapshots
+
+Quarterly Summary
+
+Simulation History
+
+Communication History
+
+Risk Evolution Graph
+
+
+Provides longitudinal visibility into instability.
+
 
 ---
 
-## 5. Machine Learning Model
+4. Technical Stack
 
-The ML service includes:
+Frontend
 
-* Synthetic dataset generation
-* Feature scaling
-* Logistic Regression classifier
-* Probability output between 0 and 1
-* Model auto-training if model file is missing
-* Retraining endpoint support
+React
 
-ML Endpoints:
+TypeScript
+
+Vite
+
+Axios
+
+
+Backend
+
+Node.js
+
+Express
+
+Prisma ORM
+
+PostgreSQL
+
+
+Machine Learning
+
+Python
+
+scikit-learn
+
+Logistic Regression
+
+Feature Scaling
+
+Synthetic Data Generator
+
+
+DevOps
+
+Docker
+
+Docker Compose
+
+
+All technologies are free and open source.
+
+
+---
+
+5. Machine Learning Design
+
+Model
+
+Logistic Regression baseline
+
+Probability output
+
+Scaled features
+
+Binary classification
+
+
+Synthetic Dataset
+
+Generated with:
+
+Income ranges
+
+Debt ratios
+
+Payment discipline metrics
+
+Behavioral variables
+
+
+Auto Training
+
+If model file is missing:
+
+Auto-train on startup
+
+Save trained model
+
+Enable /predict endpoint
+
+
+ML Endpoints
 
 POST /predict
 POST /retrain
 
-Predictions are persisted in the RiskScore table.
 
 ---
 
-## 6. Running the Project (Docker)
+6. Database Design
 
-1. Clone repository:
+Managed using Prisma ORM.
+
+Core Models
+
+Customer
+
+id
+
+name
+
+income
+
+employer
+
+behavioralScore
+
+
+RiskScore
+
+customerId
+
+probability
+
+timestamp
+
+
+Relationship
+
+sourceCustomerId
+
+targetCustomerId
+
+relationshipType
+
+
+CommunicationLog
+
+customerId
+
+type
+
+response
+
+timestamp
+
+
+SimulationHistory
+
+customerId
+
+originalRisk
+
+simulatedRisk
+
+delta
+
+modifiedFeature
+
+timestamp
+
+
+
+---
+
+7. API Endpoints (Backend)
+
+Customer
+
+GET /customers
+GET /customers/:id
+POST /customers
+
+Risk
+
+POST /risk/predict/:id
+GET /risk/:id
+
+Network
+
+GET /network/:id
+
+Simulation
+
+POST /simulate/:id
+GET /simulation/history/:id
+
+Communication
+
+POST /communication/:id
+GET /communication/:id
+
+
+---
+
+8. Setup & Execution
+
+
+---
+
+Option 1: Docker (Recommended)
+
+Clone Repository
 
 git clone <repository-url>
 cd QFSE
 
-2. Run full stack:
+Run Full Stack
 
 docker-compose up --build
 
-Services:
+Services
 
-Frontend: [http://localhost:5173](http://localhost:5173)
-Backend: [http://localhost:3001](http://localhost:3001)
-PostgreSQL: localhost:5432
-ML Service: internal container
+Service	URL
 
-System auto-migrates and seeds database on startup.
+Frontend	http://localhost:5173
+Backend	http://localhost:3001
+PostgreSQL	localhost:5432
+ML Service	Internal Container
+
+
+System auto-migrates and seeds on startup.
+
 
 ---
 
-## 7. Development Mode (Without Docker)
+Option 2: Local Development
 
-Backend:
+Backend
 
 cd backend
 npm install
@@ -519,83 +598,142 @@ npx prisma migrate dev
 npx prisma db seed
 npm run dev
 
-Frontend:
+Frontend
 
 cd frontend
 npm install
 npm run dev
 
-ML Service:
+ML Service
 
 cd ml
 pip install -r requirements.txt
 python train.py
 python app.py
 
----
-
-## 8. Security
-
-* JWT-based authentication
-* Protected API routes
-* Centralized error handling
-* Request validation
-* Rate limiting
-* Environment-based configuration
 
 ---
 
-## 9. Demo Flow
+9. Security
 
-1. Open dashboard
-2. Select a customer
-3. View risk probability
-4. Explore entanglement network
-5. Review timeline and communication logs
-6. Run simulation
-7. Observe risk delta
-8. Log communication and observe behavioral impact
+JWT Authentication
 
----
+Protected Routes
 
-## 10. Design Philosophy
+Request Validation
 
-The system is inspired by:
+Rate Limiting
 
-* Network theory
-* Probabilistic modeling
-* Behavioral finance
-* Risk contagion modeling
+Environment-based configuration
 
-Risk is modeled as a dynamic state rather than a static score.
+Centralized Error Handling
+
+
 
 ---
 
-## 11. Future Improvements
+10. Demo Flow
 
-* Graph neural networks for contagion modeling
-* Real-time event streaming
-* Explainable AI integration (e.g., SHAP)
-* Credit bureau data integration
-* Role-based dashboards
-* CI/CD pipeline
-* Production deployment hardening
+1. Open Dashboard
+
+
+2. Select Customer
+
+
+3. View Risk Probability
+
+
+4. Explore Entanglement Network
+
+
+5. Review Timeline
+
+
+6. Run Simulation
+
+
+7. Observe Risk Delta
+
+
+8. Log Communication
+
+
+9. Observe Behavioral Impact
+
+
+
 
 ---
 
-## 12. Known Limitations
+11. Design Philosophy
 
-* Uses synthetic dataset
-* Simplified contagion weights
-* Logistic regression baseline model
-* No real-world financial institution integration
+Inspired by:
+
+Network Theory
+
+Behavioral Finance
+
+Probabilistic Modeling
+
+Risk Contagion Dynamics
+
+
+Core belief:
+
+> Risk is a dynamic state, not a static number.
+
+
+
 
 ---
 
-## 13. License
+12. Future Roadmap
 
-For academic and demonstration purposes.
+Graph Neural Networks for contagion modeling
+
+Real-time event streaming
+
+Explainable AI (SHAP integration)
+
+Role-based dashboards
+
+CI/CD pipeline
+
+Production-grade monitoring
+
+Credit bureau data integration
+
+Kubernetes deployment
+
+
 
 ---
 
->>>>>>> bb919f29f5db9b45e758fb404a5fa2cc8c19ff8d
+13. Known Limitations
+
+Synthetic dataset only
+
+Simplified contagion weights
+
+Logistic Regression baseline model
+
+No external financial system integration
+
+
+
+---
+
+14. License
+
+This project is for academic and demonstration purposes.
+
+
+---
+
+Author
+
+Built as a full-stack financial risk intelligence system
+for advanced portfolio and academic demonstration.
+
+
+---
