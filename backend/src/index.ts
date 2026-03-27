@@ -5,9 +5,9 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 
-import { authRouter } from "./routes/auth";
-import { adminRouter } from "./routes/adminRoutes";
-import { customerRouter } from "./routes/customerRoutes";
+import { authRouter } from "./routes/common/auth";
+import { adminRouter } from "./routes/admin/adminRoutes";
+import { customerRouter } from "./routes/customer/customerRoutes";
 import { errorHandler }         from "./middleware/errorHandler";
 import { requestLogger }        from "./middleware/requestLogger";
 import { logger }               from "./utils/logger";

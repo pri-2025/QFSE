@@ -3,12 +3,19 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { Toaster } from "sonner";
 import { motion, AnimatePresence } from "motion/react";
 
-import { Login } from "./components/Login";
-import { Dashboard as AdminDashboard } from "./components/Dashboard";
+import { Login } from "./components/common/Login";
+import { Dashboard as AdminDashboard } from "./components/admin/Dashboard";
 import { ProtectedRoute, RoleBasedRedirect } from "./components/auth/ProtectedRoute";
-import { AdminLayout } from "./components/AdminLayout";
-import { CustomerLayout } from "./components/CustomerLayout";
-import { CustomerHome } from "./components/CustomerHome";
+import { AdminLayout } from "./components/admin/AdminLayout";
+import { CustomerLayout } from "./components/customer/CustomerLayout";
+import { CustomerHome } from "./components/customer/CustomerHome";
+import { CustomerRisk } from "./components/customer/CustomerRisk";
+import { CustomerSnapshot } from "./components/customer/CustomerSnapshot";
+import { CustomerInterventions } from "./components/customer/CustomerInterventions";
+import { CustomerTimeline } from "./components/customer/CustomerTimeline";
+import { CustomerRepayment } from "./components/customer/CustomerRepayment";
+import { CustomerNotifications } from "./components/customer/CustomerNotifications";
+import { CustomerProfile } from "./components/customer/CustomerProfile";
 
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -77,8 +84,13 @@ export default function App() {
                 }>
                   <Route index element={<Navigate to="home" replace />} />
                   <Route path="home" element={<CustomerHome />} />
-                  <Route path="risk" element={<div className="p-8">My Risk Score (Placeholder)</div>} />
-                  <Route path="timeline" element={<div className="p-8">My Timeline (Placeholder)</div>} />
+                  <Route path="risk" element={<CustomerRisk />} />
+                  <Route path="snapshot" element={<CustomerSnapshot />} />
+                  <Route path="interventions" element={<CustomerInterventions />} />
+                  <Route path="timeline" element={<CustomerTimeline />} />
+                  <Route path="repayment" element={<CustomerRepayment />} />
+                  <Route path="notifications" element={<CustomerNotifications />} />
+                  <Route path="profile" element={<CustomerProfile />} />
                 </Route>
                 
                 <Route path="*" element={<Navigate to="/" replace />} />
@@ -87,6 +99,7 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       <Toaster position="top-right" theme="dark" richColors />
     </div>

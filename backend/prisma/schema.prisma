@@ -76,6 +76,7 @@ model Customer {
   snapshots         Snapshot[]
   quarterlies       QuarterlySummary[]
   communicationLogs CommunicationLog[]
+  notifications     Notification[]
 
   @@map("customers")
 }
@@ -256,4 +257,18 @@ model CommunicationLog {
   @@index([customerId])
   @@index([sentAt(sort: Desc)])
   @@map("communication_logs")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  customerId String   @map("customer_id")
+  message    String
+  isRead     Boolean  @default(false) @map("is_read")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([createdAt(sort: Desc)])
+  @@map("notifications")
 }

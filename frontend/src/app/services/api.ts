@@ -283,4 +283,29 @@ export async function acceptMyIntervention(interventionId: string) {
   return resp.data;
 }
 
+export async function fetchMyRiskTrend(range: number = 90) {
+  const resp = await api.get(`/risk-trend?range=${range}`);
+  return resp.data;
+}
+
+export async function fetchMyRepaymentPlan() {
+  const resp = await api.get('/repayment-plan');
+  return resp.data;
+}
+
+export async function fetchMyNotifications() {
+  const resp = await api.get('/notifications');
+  return resp.data;
+}
+
+export async function markNotificationAsRead(id: string) {
+  const resp = await api.post(`/notifications/${id}/read`);
+  return resp.data;
+}
+
+export async function fetchMyEntanglementSummary() {
+  const resp = await api.get('/entanglement-summary');
+  return resp.data;
+}
+
 export default api;
