@@ -98,22 +98,39 @@ interventionsRouter.post(
       // Compute real contagion-weighted instability score
       const linkedInstabilityScore = await computeLinkedInstabilityScore(customerId);
 
-      // Build full feature vector from DB
+      // Get the latest snapshot to build full feature vector
+      const latestSnapshot = await prisma.snapshot.findFirst({
+        where: { customerId },
+        orderBy: { snapshotMonth: "desc" }
+      });
+
+      if (!latestSnapshot) {
+        res.status(400).json({ error: "No recent snapshot found to simulate against" });
+        return;
+      }
+
       const features = {
-        salary_delay_freq:         Number(customer.salaryDelayFreq),
-        credit_utilization_ratio:  Number(customer.creditUtilization) / 100,
-        emi_payment_consistency:   Number(customer.emiPaymentConsistency),
-        withdrawal_spikes:         Number(customer.withdrawalSpikes) / 10,
-        loan_to_income_ratio:      Number(customer.loanToIncomeRatio),
-        past_intervention_success: 0,
-        linked_instability_score:  linkedInstabilityScore,
+        salary_delay_days:       latestSnapshot.salaryDelayDays,
+        salary_vs_expected:      Number(latestSnapshot.salaryVsExpected) || 1.0,
+        emi_bounce_count:        latestSnapshot.emiBounceCount,
+        savings_to_salary_ratio: Number(latestSnapshot.savingsToSalaryRatio) || 0.0,
+        min_balance_breach:      latestSnapshot.minBalanceBreach,
+        upi_to_lenders_count:    latestSnapshot.upiToLendersCount,
+        atm_withdrawal_count:    latestSnapshot.atmWithdrawalCount,
+        atm_to_salary_ratio:     Number(latestSnapshot.atmToSalaryRatio) || 0.0,
+        loan_enquiry_count:      latestSnapshot.loanEnquiryCount,
+        inward_return_count:     latestSnapshot.inwardReturnCount,
+        credit_score:            latestSnapshot.creditScore || 700,
+        emi_to_income:           Number(latestSnapshot.emiToIncome) || 0.0,
+        account_vintage_months:  latestSnapshot.accountVintageMonths || 12,
+        n_emis:                  latestSnapshot.nEmis || 1
       };
 
       const mlResult = await simulateIntervention(features, actionType);
 
       // Resolve fields from either ML response shape via type guard
       let simProbability: number;
-      let confidenceScore: number;
+      let confidenceScore: number | undefined;
       let projectedRiskState: string;
       let featureImportance: Record<string, number>;
       let modifiedFeatures: Record<string, number>;

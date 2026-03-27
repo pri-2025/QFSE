@@ -6,7 +6,7 @@ export const snapshotsRouter = Router();
 
 // GET /api/snapshots/:customerId - monthly snapshots
 snapshotsRouter.get("/:customerId", async (req: Request, res: Response): Promise<void> => {
-  const { customerId } = req.params;
+  const customerId = req.params.customerId as string;
   try {
     const snapshots = await prisma.snapshot.findMany({
       where: { customerId },
@@ -33,7 +33,7 @@ snapshotsRouter.get("/:customerId", async (req: Request, res: Response): Promise
 
 // GET /api/quarterly/:customerId - quarterly summaries
 snapshotsRouter.get("/quarterly/:customerId", async (req: Request, res: Response): Promise<void> => {
-  const { customerId } = req.params;
+  const customerId = req.params.customerId as string;
   try {
     const quarters = await prisma.quarterlySummary.findMany({
       where: { customerId },

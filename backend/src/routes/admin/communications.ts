@@ -39,7 +39,7 @@ const RISK_ADJUSTMENT: Record<string, number> = {
 communicationsRouter.get(
   "/:customerId",
   async (req: Request, res: Response): Promise<void> => {
-    const { customerId } = req.params;
+    const customerId = req.params.customerId as string;
     const { type, channel, limit = "50" } = req.query as Record<string, string>;
 
     try {
@@ -134,7 +134,7 @@ communicationsRouter.patch(
   "/:id/outcome",
   validateBody(OutcomeSchema),
   async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const body = req.body as z.infer<typeof OutcomeSchema>;
 
     try {

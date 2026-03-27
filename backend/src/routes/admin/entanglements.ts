@@ -38,7 +38,7 @@ function computeContagionScore(
  * Returns social-financial topology graph with full contagion score.
  */
 entanglementsRouter.get("/:customerId", async (req: Request, res: Response): Promise<void> => {
-  const { customerId } = req.params;
+  const customerId = req.params.customerId as string;
 
   try {
     const customer = await prisma.customer.findUnique({

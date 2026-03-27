@@ -180,7 +180,10 @@ export async function fetchTimeline(customerId: string) {
 }
 
 export async function refreshRisk(customerId: string) {
-  const resp = await api.post(`/customers/${customerId}/refresh-risk`, {});
+  const token = localStorage.getItem("qfse_token");
+  const resp = await axios.post(`${BASE_URL}/predict-risk/${customerId}`, {}, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
   return resp.data;
 }
 

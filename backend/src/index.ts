@@ -8,9 +8,12 @@ import rateLimit from "express-rate-limit";
 import { authRouter } from "./routes/common/auth";
 import { adminRouter } from "./routes/admin/adminRoutes";
 import { customerRouter } from "./routes/customer/customerRoutes";
+import { predictionsRouter } from "./routes/common/predictions";
+import { localPredictionRouter } from "./routes/common/localPrediction";
 import { errorHandler }         from "./middleware/errorHandler";
 import { requestLogger }        from "./middleware/requestLogger";
 import { logger }               from "./utils/logger";
+import { initMonthlyPredictionJob } from "./jobs/monthlyPredictionJob";
 
 dotenv.config();
 
@@ -46,6 +49,8 @@ app.use("/api", limiter);
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/customer", customerRouter);
+app.use("/api", predictionsRouter);
+app.use("/api", localPredictionRouter);
 
 // ── Health check ───────────────────────────────────────────────
 app.get("/health", (_req, res) => {
@@ -68,7 +73,10 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   logger.info(`🚀 QFSE Backend running on port ${PORT}`);
   logger.info(`   Environment : ${process.env.NODE_ENV || "development"}`);
-  logger.info(`   ML Engine   : ${process.env.ML_ENGINE_URL || "http://localhost:8000"}`);
+  logger.info(`   ML Engine   : ${process.env.ML_ENGINE_URL || "https://unvanishing-enunciatively-elinor.ngrok-free.dev"}`);
+  
+  // Initialize cron job to auto predict risk scores
+  initMonthlyPredictionJob(true); // pass true to trigger sweep immediately for testing
 });
 
 export default app;

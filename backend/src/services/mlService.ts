@@ -1,25 +1,32 @@
 import axios from "axios";
 import { logger } from "../utils/logger";
 
-const ML_BASE_URL = process.env.ML_ENGINE_URL || "http://localhost:8000";
+const ML_BASE_URL = process.env.ML_ENGINE_URL || "https://unvanishing-enunciatively-elinor.ngrok-free.dev";
 
 export interface MlRiskInput {
-  salary_delay_freq:         number;
-  credit_utilization_ratio:  number;
-  emi_payment_consistency:   number;
-  withdrawal_spikes:         number;
-  loan_to_income_ratio:      number;
-  past_intervention_success: number;
-  linked_instability_score:  number;
+  salary_delay_days:         number;
+  salary_vs_expected:        number;
+  emi_bounce_count:          number;
+  savings_to_salary_ratio:   number;
+  min_balance_breach:        number;
+  upi_to_lenders_count:      number;
+  atm_withdrawal_count:      number;
+  atm_to_salary_ratio:       number;
+  loan_enquiry_count:        number;
+  inward_return_count:       number;
+  credit_score:              number;
+  emi_to_income:             number;
+  account_vintage_months:    number;
+  n_emis:                    number;
 }
 
 export interface MlRiskOutput {
   probability:        number;
   risk_state:         string;
   feature_importance: Record<string, number>;
-  confidence_score:   number;
-  model_version:      string;
-  model_name:         string;
+  confidence_score?:  number;
+  model_version?:     string;
+  model_name?:        string;
 }
 
 /** Returned by POST /simulate-intervention when ML engine is v1.1+ */
@@ -39,11 +46,11 @@ export interface MlSimulationOutput {
 /** Union type for flexibility between model versions */
 export type MlSimulateResponse = MlSimulationOutput | MlRiskOutput;
 
-// ── Predict risk from raw feature vector ─────────────────────
 export async function predictRisk(features: MlRiskInput): Promise<MlRiskOutput> {
   try {
-    const resp = await axios.post<MlRiskOutput>(`${ML_BASE_URL}/predict-risk`, features, {
+    const resp = await axios.post<MlRiskOutput>(`${ML_BASE_URL}/predict`, features, {
       timeout: 10_000,
+      headers: { "Content-Type": "application/json" }
     });
     return resp.data;
   } catch (err) {

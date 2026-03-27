@@ -291,7 +291,7 @@ customerRouter.post("/notifications/:id/read", async (req: AuthRequest, res: Res
     if (!customer) { res.status(404).json({ error: "Customer not found" }); return; }
 
     const notif = await prisma.notification.findFirst({
-      where: { id: req.params.id, customerId: customer.id }
+      where: { id: req.params.id as string, customerId: customer.id }
     });
 
     if (!notif) { res.status(404).json({ error: "Notification not found" }); return; }

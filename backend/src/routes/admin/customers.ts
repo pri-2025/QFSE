@@ -91,7 +91,7 @@ customersRouter.get("/", async (req: Request, res: Response): Promise<void> => {
 
 // GET /api/customers/:id - full customer profile
 customersRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   try {
     const customer = await prisma.customer.findUnique({
       where: { id },
@@ -217,7 +217,7 @@ customersRouter.get("/:id", async (req: Request, res: Response): Promise<void> =
 
 // GET /api/customers/:id/risk-history
 customersRouter.get("/:id/risk-history", async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   try {
     const scores = await prisma.riskScore.findMany({
       where: { customerId: id },
@@ -237,7 +237,7 @@ customersRouter.get("/:id/risk-history", async (req: Request, res: Response): Pr
 
 // GET /api/customers/:id/entanglements
 customersRouter.get("/:id/entanglements", async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   try {
     const entanglements = await prisma.entanglement.findMany({
       where: { customerId: id },
@@ -266,7 +266,7 @@ customersRouter.get("/:id/entanglements", async (req: Request, res: Response): P
 
 // GET /api/customers/:id/timeline
 customersRouter.get("/:id/timeline", async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   try {
     const events = await prisma.timelineEvent.findMany({
       where: { customerId: id },
@@ -287,46 +287,4 @@ customersRouter.get("/:id/timeline", async (req: Request, res: Response): Promis
   }
 });
 
-// POST /api/customers/:id/refresh-risk - call ML engine, update score
-customersRouter.post("/:id/refresh-risk", async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  try {
-    const customer = await prisma.customer.findUnique({ where: { id } });
-    if (!customer) {
-      res.status(404).json({ error: "Customer not found" });
-      return;
-    }
 
-    const features = {
-      salary_delay_freq:         Number(customer.salaryDelayFreq),
-      credit_utilization_ratio:  Number(customer.creditUtilization) / 100,
-      emi_payment_consistency:   Number(customer.emiPaymentConsistency),
-      withdrawal_spikes:         customer.withdrawalSpikes / 10,
-      loan_to_income_ratio:      Number(customer.loanToIncomeRatio),
-      past_intervention_success: 0,
-      linked_instability_score:  0,
-    };
-
-    const mlResult = await predictRisk(features);
-
-    const saved = await prisma.riskScore.create({
-      data: {
-        customerId:       id,
-        probability:      mlResult.probability,
-        riskState:        mlResult.risk_state,
-        featureImportance: mlResult.feature_importance,
-        modelVersion:     mlResult.model_version,
-      },
-    });
-
-    res.json({
-      risk:             Math.round(mlResult.probability * 100),
-      riskState:        mlResult.risk_state,
-      featureImportance:mlResult.feature_importance,
-      confidenceScore:  mlResult.confidence_score,
-    });
-  } catch (err) {
-    logger.error(`POST /customers/${id}/refresh-risk error:`, err);
-    res.status(500).json({ error: "Failed to refresh risk score" });
-  }
-});

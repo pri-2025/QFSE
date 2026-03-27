@@ -209,6 +209,23 @@ model Snapshot {
   savingsBalance Decimal? @map("savings_balance")
   creditUtilPct  Decimal? @map("credit_util_pct")
   behavioralFlags Json?   @map("behavioral_flags")
+  
+  // New automated ML tracking features
+  salaryDelayDays       Int      @default(0) @map("salary_delay_days")
+  salaryVsExpected      Decimal  @default(1.0) @map("salary_vs_expected")
+  emiBounceCount        Int      @default(0) @map("emi_bounce_count")
+  savingsToSalaryRatio  Decimal  @default(0.0) @map("savings_to_salary_ratio")
+  minBalanceBreach      Int      @default(0) @map("min_balance_breach")
+  upiToLendersCount     Int      @default(0) @map("upi_to_lenders_count")
+  atmWithdrawalCount    Int      @default(0) @map("atm_withdrawal_count")
+  atmToSalaryRatio      Decimal  @default(0.0) @map("atm_to_salary_ratio")
+  loanEnquiryCount      Int      @default(0) @map("loan_enquiry_count")
+  inwardReturnCount     Int      @default(0) @map("inward_return_count")
+  creditScore           Int      @default(700) @map("credit_score")
+  emiToIncome           Decimal  @default(0.0) @map("emi_to_income")
+  accountVintageMonths  Int      @default(12) @map("account_vintage_months")
+  nEmis                 Int      @default(1) @map("n_emis")
+
   createdAt      DateTime @default(now()) @map("created_at")
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
