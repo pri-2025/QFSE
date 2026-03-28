@@ -7,45 +7,43 @@ import { fetchPersonaDistribution, fetchPortfolioSummary } from "../../services/
 import { motion } from "motion/react";
 
 interface ScreenPersonaViewProps {
-  onSelectPersona:    (persona: PersonaType) => void;
+  onSelectPersona: (persona: PersonaType) => void;
   onSelectRiskLevels?: (riskLevels: string[]) => void;
 }
 
-// Risk state colours and labels
 const RISK_COLORS: Record<string, string> = {
-  "Healthy":          "#2E8B57",
-  "Watchlist":        "#4169E1",
-  "At Risk":          "#FFD700",
+  "Healthy": "#2E8B57",
+  "Watchlist": "#4169E1",
+  "At Risk": "#FFD700",
   "Imminent Default": "#FF4444",
 };
 const RISK_EMOJI: Record<string, string> = {
-  "Healthy":          "⚪",
-  "Watchlist":        "🔵",
-  "At Risk":          "🟡",
+  "Healthy": "⚪",
+  "Watchlist": "🔵",
+  "At Risk": "🟡",
   "Imminent Default": "🔴",
 };
 
 export function ScreenPersonaView({ onSelectPersona, onSelectRiskLevels }: ScreenPersonaViewProps) {
   const [selectedPersonaSegment, setSelectedPersonaSegment] = React.useState<string | null>(null);
-  const [selectedRiskSegment,    setSelectedRiskSegment]    = React.useState<string | null>(null);
+  const [selectedRiskSegment, setSelectedRiskSegment] = React.useState<string | null>(null);
 
   const { data: personas, loading: personasLoading } = useApi(fetchPersonaDistribution);
-  const { data: summary,  loading: summaryLoading  } = useApi(fetchPortfolioSummary);
+  const { data: summary, loading: summaryLoading } = useApi(fetchPortfolioSummary);
 
-  // ── Build DonutChart segments from API data ───────────────
   const personaDonutData: DonutSegment[] = React.useMemo(() => {
     if (!personas) return [];
     return personas.map(p => ({
-      id:             p.id,
-      label:          p.name.replace("Salary-Dependent Struggler", "Salary-Dependent")
-                             .replace("Credit-Heavy Overuser", "Credit-Heavy")
-                             .replace("Emergency Cash Withdrawer", "Emergency Cash")
-                             .replace("Silent Saver Drain", "Silent Saver")
-                             .replace("Paycheck-to-Paycheck Survivor", "Paycheck-Paycheck"),
-      value:          p.count,
-      count:          p.count,
-      color:          p.color,
-      emoji:          p.emoji,
+      id: p.id,
+      label: p.name.replace("Salary-Dependent Struggler", "Salary-Dependent")
+        .replace("Credit-Heavy Overuser", "Credit-Heavy")
+        .replace("Emergency Cash Withdrawer", "Emergency Cash")
+        .replace("Silent Saver Drain", "Silent Saver")
+        .replace("Paycheck-to-Paycheck Survivor", "Paycheck-Paycheck"),
+      value: p.count,
+      count: p.count,
+      color: p.color,
+      emoji: p.emoji,
       additionalInfo: p.additionalInfo,
     }));
   }, [personas]);
@@ -54,12 +52,12 @@ export function ScreenPersonaView({ onSelectPersona, onSelectRiskLevels }: Scree
     if (!summary) return [];
     const dist = summary.riskStateDistribution;
     return (Object.entries(dist) as [string, number][]).map(([state, count]) => ({
-      id:             state.toLowerCase().replace(/\s+/g, "-"),
-      label:          state,
-      value:          count,
+      id: state.toLowerCase().replace(/\s+/g, "-"),
+      label: state,
+      value: count,
       count,
-      color:          RISK_COLORS[state] || "#888",
-      emoji:          RISK_EMOJI[state]  || "⚪",
+      color: RISK_COLORS[state] || "#888",
+      emoji: RISK_EMOJI[state] || "⚪",
       additionalInfo: count === 0
         ? "No customers"
         : state === "Imminent Default"
@@ -76,7 +74,6 @@ export function ScreenPersonaView({ onSelectPersona, onSelectRiskLevels }: Scree
 
   const handlePersonaSegmentClick = (segment: DonutSegment) => {
     setSelectedPersonaSegment(segment.id === selectedPersonaSegment ? null : segment.id);
-    // Map segment id back to persoan name for navigation
     if (personas) {
       const matched = personas.find(p => p.id === segment.id);
       if (matched) onSelectPersona(matched.name as PersonaType);
@@ -97,10 +94,9 @@ export function ScreenPersonaView({ onSelectPersona, onSelectRiskLevels }: Scree
       exit={{ opacity: 0, y: -10 }}
       className="p-6 h-full"
     >
-      {/* Two charts side-by-side — horizontal, responsive */}
       <div className="flex flex-col lg:flex-row gap-6 h-full">
 
-        {/* ── Left: Persona Distribution ── */}
+        {/* Left: Persona Distribution */}
         <div className="flex-1 min-w-0">
           <QuantumCard title="" className="h-full" glow>
             {loading ? (
@@ -115,16 +111,16 @@ export function ScreenPersonaView({ onSelectPersona, onSelectRiskLevels }: Scree
                 centerValue={totalCustomers.toLocaleString()}
                 onSegmentClick={handlePersonaSegmentClick}
                 selectedSegmentId={selectedPersonaSegment}
-                size={220}
-                innerRadius={65}
-                outerRadius={85}
+                size={320}
+                innerRadius={85}
+                outerRadius={115}
                 showLegend={true}
               />
             )}
           </QuantumCard>
         </div>
 
-        {/* ── Right: Risk State Distribution ── */}
+        {/* Right: Risk State Distribution */}
         <div className="flex-1 min-w-0">
           <QuantumCard title="" className="h-full" glow>
             {loading ? (
@@ -140,13 +136,12 @@ export function ScreenPersonaView({ onSelectPersona, onSelectRiskLevels }: Scree
                   centerValue={totalCustomers.toLocaleString()}
                   onSegmentClick={handleRiskSegmentClick}
                   selectedSegmentId={selectedRiskSegment}
-                  size={220}
-                  innerRadius={65}
-                  outerRadius={85}
+                  size={320}
+                  innerRadius={85}
+                  outerRadius={115}
                   showLegend={true}
                 />
 
-                {/* Quick actions */}
                 <div className="mt-auto pt-6 border-t border-[#2A2A3A]">
                   <p className="text-[12px] font-medium text-[#E6E6E6] uppercase mb-4 tracking-wider">Quick Actions</p>
                   <div className="grid grid-cols-2 gap-3">
