@@ -170,9 +170,6 @@ export function Login() {
             )}
           </AnimatePresence>
 
-          <div className="mt-8 pt-6 border-t border-[#2A2A3A] text-center">
-            <p className="text-[10px] text-[#B0B0C0] uppercase tracking-widest">Barclays PS3 Innovation Challenge • 2026</p>
-          </div>
         </motion.div>
       </div>
     </motion.div>
